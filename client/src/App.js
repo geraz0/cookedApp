@@ -25,7 +25,12 @@ function App() {
           paddingLeft: isLoggedIn ? '240px' : '0px' // Space for sidebar when logged in
         }}
       >
-        <h1>Cooked</h1>
+        {/* Replace the text with an image */}
+        <img 
+          src="/Logo.png"  // Updated path to the image
+          alt="Cooked Logo"
+          style={{ width: '150px', height: 'auto' }}  // Adjust the size as needed
+        />
       </header>
 
       {/* Conditionally render Login, Register, or main content */}

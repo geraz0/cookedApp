@@ -10,7 +10,7 @@
 .app-content {
   flex-grow: 1;
   margin-left: 80px; /* Space for the sidebar */
-  padding: 20px;
+  padding: 20px 30px;
   display: flex;
   flex-direction: column;
  

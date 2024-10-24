@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import RecipeForm from "./recipeForm"; // Import the RecipeForm component
+import Footer from "./footer";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Cooked Platform</h1> 
       </header>
+      <div className="app-content">
+      <RecipeForm /> {/* Render the form component */}
+      </div>
+
+      {/* Footer component */}
+      <Footer />
     </div>
   );
 }

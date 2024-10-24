@@ -22,14 +22,14 @@ function App() {
         className="app-header"
         style={{ 
           textAlign: isLoggedIn ? 'left' : 'center', // Center the text when not logged in
-          paddingLeft: isLoggedIn ? '240px' : '0px' // Space for sidebar when logged in
+          paddingLeft: isLoggedIn ? '80px' : '0px' // Space for sidebar when logged in
         }}
       >
         {/* Replace the text with an image */}
         <img 
           src="/Logo.png"  // Updated path to the image
           alt="Cooked Logo"
-          style={{ width: '150px', height: 'auto' }}  // Adjust the size as needed
+          style={{ width: '140px', height: 'auto' }}  // Adjust the size as needed
         />
       </header>
 

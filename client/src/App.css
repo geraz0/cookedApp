@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column; 
   min-height: 100vh;
-  background-color: #F0E2C1;
+  background-color: #F7C59F;
   font-family: 'Nunito Sans', sans-serif;
 }
 
@@ -13,14 +13,14 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  background-color: #F0E2C1;
+ 
+  background-color: #F7C59F;
 }
 
 .app-header {
-  background-color: #282c34;
+  background-color: #F7C59F;
   padding: 20px;
-  color: white;
+  color: black;
   text-align: center;
   width: 100%;
 }
@@ -64,9 +64,8 @@ button:hover {
 }
 
 /* Footer positioning */
-footer {
-  
-  background-color: #f8f9fa;
+footer { 
+  background-color: #F7C59F;
   padding: 10px;
   text-align: center;
   width: 100%;

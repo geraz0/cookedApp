@@ -1,37 +1,55 @@
 /* App.css */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
 .app-container {
   display: flex;
-  flex-direction: column; 
+  box-sizing: border-box;
+  flex-direction: column;
   min-height: 100vh;
-  background-color: #F7C59F;
-  font-family: 'Nunito Sans', sans-serif;
+  background-color: #f7c59f;
+  width: 100%; /* Ensures the container covers the full width */
+  margin: 0; /* No margins */
+  padding: 0; /* No padding */
 }
 
 .app-content {
   flex-grow: 1;
-  margin-left: 80px; /* Space for the sidebar */
-  padding: 20px;
+  margin-left: 70px; /* Keeps space for the sidebar */
+  margin-right: 20;   /* Remove margin on the right */
+  padding: 20px 30px;
+  align-items: center;
   display: flex;
   flex-direction: column;
- 
-  background-color: #F7C59F;
+  background-color: #f7c59f;
+   /* Ensure the content covers full width minus sidebar */
+  box-sizing: border-box;
 }
 
 .app-header {
-  background-color: #F7C59F;
+  background-color: #f7c59f;
   padding: 20px;
-  color: black;
-  text-align: center;
-  width: 100%;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Full width */
+  transition: padding-left 0.3s ease; /* Smooth transition for padding-left */
 }
 
 form {
-  margin: 20px auto; /* Center the form horizontally */
-  padding: 20px;
+  margin: 30px;
+  padding: 10px;
   background-color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Full width */
-  max-width: 800px; /* Max width for larger screens */
+  width: 100%;
+  max-width: 800px;
   border-radius: 10px;
 }
 
@@ -63,12 +81,9 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Footer positioning */
-footer { 
-  background-color: #F7C59F;
+footer {
+  background-color: #f7c59f;
   padding: 10px;
   text-align: center;
   width: 100%;
-  position: relative;
-  bottom: 0;
 }

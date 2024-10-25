@@ -8,14 +8,12 @@ const RecipeForm = () => {
   ]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
-
+  const [message, setMessage] = useState(""); // For success/error messages
 
   const lambdaUrl = "https://your-lambda-function-url"; 
 
   // Handle the title input change
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
+  const handleTitleChange = (e) => setTitle(e.target.value);
 
   // Handle adding a new ingredient
   const handleAddIngredient = () => {
@@ -33,15 +31,13 @@ const RecipeForm = () => {
   };
 
   // Handle image upload
-  const handleImageUpload = (e) => {
-    setImage(e.target.files[0]);
-  };
+  const handleImageUpload = (e) => setImage(e.target.files[0]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Form submission logic goes here
-    
+
+    // Form data preparation for POST
     const formData = new FormData();
     formData.append("title", title);
     formData.append("instructions", instructions);
@@ -50,9 +46,7 @@ const RecipeForm = () => {
       formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
       formData.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
-    if (image) {
-      formData.append("image", image);
-    }
+    if (image) formData.append("image", image);
 
     try {
       const response = await fetch(lambdaUrl, {
@@ -62,16 +56,16 @@ const RecipeForm = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Recipe created successfully:", result);
+        setMessage("Recipe created successfully!");
         setTitle("");
         setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
         setInstructions("");
         setImage(null);
       } else {
-        console.error("Failed to create recipe:", response.statusText);
+        setMessage(`Failed to create recipe: ${response.statusText}`);
       }
     } catch (error) {
-      console.error("Error submitting the form:", error);
+      setMessage(`Error submitting the form: ${error.message}`);
     }
   };
 
@@ -135,7 +129,6 @@ const RecipeForm = () => {
               <option value="tbsp">tablespoons</option>
               <option value="tsp">teaspoons</option>
               <option value="cup">cups</option>
-              {/* Add more units as needed */}
             </select>
           </div>
         ))}
@@ -180,6 +173,9 @@ const RecipeForm = () => {
           Add Recipe
         </button>
       </div>
+
+      {/* Message Display */}
+      {message && <p style={{ marginTop: "20px", color: "green" }}>{message}</p>}
     </form>
   );
 };

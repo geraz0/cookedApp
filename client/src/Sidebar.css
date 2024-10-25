@@ -1,45 +1,38 @@
 /* Sidebar.css */
 .sidebar {
-  display: flex;
-  flex-direction: column;
-  width: auto;
-  height: 50vh;
-  background-color: #f7c59f;
-  position: fixed;
-  top: 20px;
-  left: 0;
-  z-index: 1000;
-  justify-content: flex-start; /* Ensure the tabs are aligned correctly */
-}
-
-.tab {
-  width: 100%;
-  padding: 20px 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  background-color: WHITE;
-  margin-bottom: 10px;
-  border-radius: 0 10px 10px 0;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.tab:hover {
-  background-color: #e9ecef;
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.tab .fa-icon {
-  color: #333;
-}
-
-.tab.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.tab.active .fa-icon {
-  color: white;
-}
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: 50vh;
+    background-color: #f7c59f;
+    position: fixed;
+    top: 20px;
+    left: 0;
+    z-index: 1000;
+    justify-content: flex-start;
+  }
+  
+  .tab {
+    width: 100%;
+    padding: 20px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: white;
+    margin-bottom: 10px;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .tab:hover {
+    background-color: #e9ecef;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .tab.active {
+    background-color: #ADC178; /* Active tab color */
+    color: white;
+  }
+  

@@ -1,17 +1,24 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Register from "./Register";
 import RecipeForm from "./recipeForm";
 import Footer from "./footer";
 import Sidebar from "./Sidebar";
-import RecipeList from "./RecipeList"; // Import RecipeList component
+import RecipeList from "./RecipeList";
 
 function App() {
   const [activeTab, setActiveTab] = useState("home");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegisterView, setIsRegisterView] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
+  const [recipes, setRecipes] = useState([]); // State to hold fetched recipes
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchRecipes();
+    }
+  }, [isLoggedIn]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -21,21 +28,14 @@ function App() {
     try {
       const response = await fetch("https://your-lambda-function-url/recipes");
       if (response.ok) {
-        const recipes = await response.json();
-        return recipes;
+        const data = await response.json();
+        setRecipes(data); // Set fetched recipes
       } else {
         console.error("Failed to fetch recipes:", response.statusText);
-        return [];
       }
     } catch (error) {
       console.error("Error fetching recipes:", error);
-      return [];
     }
-  };
-
-  const showRecipeDetails = (recipe) => {
-    // Logic to show full recipe details, e.g., setting a modal or redirecting
-    console.log("Selected recipe details:", recipe);
   };
 
   return (
@@ -50,7 +50,7 @@ function App() {
         <img
           src="/Logo.png"
           alt="Cooked Logo"
-          style={{ width: "140px", height: "auto" }}
+          style={{ width: "120px", height: "auto" }}
         />
       </header>
       {!isLoggedIn && !isRegisterView && (
@@ -64,7 +64,11 @@ function App() {
       )}
       {isLoggedIn && (
         <>
-          <Sidebar onTabClick={handleTabClick} fetchRecipes={fetchRecipes} />
+          <Sidebar
+            onTabClick={handleTabClick}
+            recipes={recipes}
+            searchQuery={searchQuery}
+          />
           <div className="app-content">
             {activeTab === "home" && (
               <div>
@@ -87,16 +91,12 @@ function App() {
                     padding: "10px",
                   }}
                 />
-                <RecipeList
-                  fetchRecipes={fetchRecipes}
-                  searchQuery={searchQuery}
-                  showRecipeDetails={showRecipeDetails}
-                />
+                <RecipeList recipes={recipes} searchQuery={searchQuery} />
               </div>
             )}
             {activeTab === "instructions" && (
               <div>
-                <h2>Instructions</h2>
+                <h2>Grocery List</h2>
                 <p>Upload or edit instructions for your recipes.</p>
               </div>
             )}

@@ -1,18 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RecipeCard from "./RecipeCard";
 
-const RecipeList = ({ fetchRecipes, searchQuery, showRecipeDetails }) => {
-  const [recipes, setRecipes] = useState([]);
-
-  useEffect(() => {
-    const fetchAllRecipes = async () => {
-      const response = await fetchRecipes();
-      setRecipes(response);
-    };
-
-    fetchAllRecipes();
-  }, [fetchRecipes]);
-
+const RecipeList = ({ recipes, searchQuery, showRecipeDetails }) => {
   const filteredRecipes = recipes.filter((recipe) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -28,7 +17,7 @@ const RecipeList = ({ fetchRecipes, searchQuery, showRecipeDetails }) => {
   return (
     <div className="recipe-list">
       {filteredRecipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} onClick={showRecipeDetails} />
+        <RecipeCard key={recipe.id} recipe={recipe} onClick={() => showRecipeDetails(recipe)} />
       ))}
     </div>
   );

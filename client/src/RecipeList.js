@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import RecipeCard from "./RecipeCard";
 
-const RecipeList = ({ fetchRecipes, showRecipeDetails }) => {
+const RecipeList = ({ fetchRecipes, searchQuery, showRecipeDetails }) => {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
@@ -13,9 +13,21 @@ const RecipeList = ({ fetchRecipes, showRecipeDetails }) => {
     fetchAllRecipes();
   }, [fetchRecipes]);
 
+  const filteredRecipes = recipes.filter((recipe) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      recipe.title.toLowerCase().includes(query) ||
+      recipe.ingredients.some((ingredient) =>
+        ingredient.toLowerCase().includes(query)
+      ) ||
+      recipe.instructions.toLowerCase().includes(query) ||
+      recipe.tags?.some((tag) => tag.toLowerCase() === query)
+    );
+  });
+
   return (
     <div className="recipe-list">
-      {recipes.map((recipe) => (
+      {filteredRecipes.map((recipe) => (
         <RecipeCard key={recipe.id} recipe={recipe} onClick={showRecipeDetails} />
       ))}
     </div>

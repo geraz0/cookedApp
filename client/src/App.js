@@ -15,6 +15,23 @@ function App() {
     setActiveTab(tab);
   };
 
+  // Step: Add fetchRecipes function to fetch recipes from the backend
+  const fetchRecipes = async () => {
+    try {
+      const response = await fetch("https://your-lambda-function-url/recipes"); // Replace with actual Lambda URL
+      if (response.ok) {
+        const recipes = await response.json();
+        return recipes;  // Return the list of recipes
+      } else {
+        console.error("Failed to fetch recipes:", response.statusText);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      return [];
+    }
+  };
+
   return (
     <div className="app-container">
       {/* Header should always be visible, with conditional styling */}
@@ -39,7 +56,7 @@ function App() {
 
       {isLoggedIn && (
         <>
-          <Sidebar onTabClick={handleTabClick} /> {/* Sidebar component */}
+          <Sidebar onTabClick={handleTabClick} fetchRecipes={fetchRecipes} /> {/* Pass fetchRecipes to Sidebar */}
           <div className="app-content">
             {/* Conditionally render content based on the active tab */}
             {activeTab === 'home' && (

@@ -9,6 +9,9 @@ const RecipeForm = () => {
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
 
+
+  const lambdaUrl = "https://your-lambda-function-url"; 
+
   // Handle the title input change
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -35,15 +38,41 @@ const RecipeForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Form submission logic goes here
-    console.log({
-      title,
-      ingredients,
-      instructions,
-      image,
+    
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("instructions", instructions);
+    ingredients.forEach((ingredient, index) => {
+      formData.append(`ingredients[${index}][name]`, ingredient.name);
+      formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+      formData.append(`ingredients[${index}][unit]`, ingredient.unit);
     });
+    if (image) {
+      formData.append("image", image);
+    }
+
+    try {
+      const response = await fetch(lambdaUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Recipe created successfully:", result);
+        setTitle("");
+        setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
+        setInstructions("");
+        setImage(null);
+      } else {
+        console.error("Failed to create recipe:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+    }
   };
 
   return (

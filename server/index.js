@@ -6,17 +6,17 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middleware
+
 app.use(bodyParser.json());
 
-// Test the root route
+// Test root route
 app.get('/', (req, res) => {
   res.send('Welcome to the Recipe and Meal Plan API!');
 });
 
-// ------ USERS ROUTES ------ //
 
-// Create a new user
+
+// Create new user
 app.post('/users', async (req, res) => {
     try {
       const { username, email, password } = req.body;
@@ -135,7 +135,7 @@ app.delete('/users/:id', async (req, res) => {
 
 // ------ RECIPES ROUTES ------ //
 
-// Create a new recipe
+// Create new recipe
 app.post('/recipes', async (req, res) => {
   try {
     const { user_id, recipe_name, description, instructions, servings } = req.body;
@@ -218,7 +218,7 @@ app.delete('/recipes/:id', async (req, res) => {
 
 // ------ INGREDIENTS ROUTES ------ //
 
-// Create a new ingredient
+// Create new ingredient
 app.post('/ingredients', async (req, res) => {
   try {
     const { ingredient_name, unit } = req.body;

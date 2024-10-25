@@ -82,6 +82,7 @@ const Recipes = sequelize.define('Recipes', {
     defaultValue: Sequelize.NOW,
   },
 }, {
+    tableName:"recipes",
   timestamps: false,
 });
 
@@ -101,6 +102,7 @@ const Ingredients = sequelize.define('Ingredients', {
     allowNull: false,
   },
 }, {
+    tableName: 'ingredients',
   timestamps: false,
 });
 
@@ -127,6 +129,7 @@ const RecipeIngredients = sequelize.define('RecipeIngredients', {
     allowNull: false,
   },
 }, {
+    tableName: 'recipeingredients',
   timestamps: false,
 });
 
@@ -153,6 +156,7 @@ const MealPlans = sequelize.define('MealPlans', {
     allowNull: false,
   },
 }, {
+    tableName: 'mealplans',
   timestamps: false,
 });
 
@@ -175,6 +179,7 @@ const MealPlanRecipes = sequelize.define('MealPlanRecipes', {
     primaryKey: true,
   },
 }, {
+    tableName: 'mealplanrecipes',
   timestamps: false,
 });
 

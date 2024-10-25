@@ -1,88 +1,108 @@
 import "./App.css";
-import React, { useState } from "react";
-import Login from './Login';
-import Register from './Register'; // Import the Register component
-import RecipeForm from "./recipeForm"; // Import the RecipeForm component
+import React, { useState, useEffect } from "react";
+import Login from "./Login";
+import Register from "./Register";
+import RecipeForm from "./recipeForm";
 import Footer from "./footer";
-import Sidebar from "./Sidebar"; // Import the Sidebar component
+import Sidebar from "./Sidebar";
+import RecipeList from "./RecipeList";
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home'); // State to track active tab
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if user is logged in
-  const [isRegisterView, setIsRegisterView] = useState(false); // Track if register view is active
+  const [activeTab, setActiveTab] = useState("home");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isRegisterView, setIsRegisterView] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [recipes, setRecipes] = useState([]); // State to hold fetched recipes
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchRecipes();
+    }
+  }, [isLoggedIn]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  // Step: Add fetchRecipes function to fetch recipes from the backend
   const fetchRecipes = async () => {
     try {
-      const response = await fetch("https://your-lambda-function-url/recipes"); // Replace with actual Lambda URL
+      const response = await fetch("https://your-lambda-function-url/recipes");
       if (response.ok) {
-        const recipes = await response.json();
-        return recipes;  // Return the list of recipes
+        const data = await response.json();
+        setRecipes(data); // Set fetched recipes
       } else {
         console.error("Failed to fetch recipes:", response.statusText);
-        return [];
       }
     } catch (error) {
       console.error("Error fetching recipes:", error);
-      return [];
     }
   };
 
   return (
     <div className="app-container">
-      {/* Header should always be visible, with conditional styling */}
-      <header 
+      <header
         className="app-header"
-        style={{ 
-          textAlign: isLoggedIn ? 'left' : 'center', // Center the text when not logged in
-          paddingLeft: isLoggedIn ? '80px' : '0px' // Space for sidebar when logged in
+        style={{
+          textAlign: isLoggedIn ? "left" : "center",
+          paddingLeft: isLoggedIn ? "80px" : "0px",
         }}
       >
-        {/* Replace the text with an image */}
-        <img 
-          src="/Logo.png"  // Updated path to the image
+        <img
+          src="/Logo.png"
           alt="Cooked Logo"
-          style={{ width: '140px', height: 'auto' }}  // Adjust the size as needed
+          style={{ width: "120px", height: "auto" }}
         />
       </header>
-
-      {/* Conditionally render Login, Register, or main content */}
-      {!isLoggedIn && !isRegisterView && <Login setIsLoggedIn={setIsLoggedIn} setIsRegisterView={setIsRegisterView} />} {/* Show Login if not logged in */}
-      {!isLoggedIn && isRegisterView && <Register setIsRegistered={setIsLoggedIn} />} {/* Show Register if Register view is active */}
-
+      {!isLoggedIn && !isRegisterView && (
+        <Login
+          setIsLoggedIn={setIsLoggedIn}
+          setIsRegisterView={setIsRegisterView}
+        />
+      )}
+      {!isLoggedIn && isRegisterView && (
+        <Register setIsRegistered={setIsLoggedIn} />
+      )}
       {isLoggedIn && (
         <>
-          <Sidebar onTabClick={handleTabClick} fetchRecipes={fetchRecipes} /> {/* Pass fetchRecipes to Sidebar */}
+          <Sidebar
+            onTabClick={handleTabClick}
+            recipes={recipes}
+            searchQuery={searchQuery}
+          />
           <div className="app-content">
-            {/* Conditionally render content based on the active tab */}
-            {activeTab === 'home' && (
+            {activeTab === "home" && (
               <div>
                 <h2>Welcome to Cooked Platform</h2>
                 <p>Select a tab to get started!</p>
               </div>
             )}
-            {activeTab === 'ingredients' && <RecipeForm />} {/* Show RecipeForm for ingredients */}
-            {activeTab === 'recipes' && (
+            {activeTab === "ingredients" && <RecipeForm />}
+            {activeTab === "recipes" && (
               <div>
                 <h2>Recipes</h2>
-                <p>Here you can manage your recipes.</p>
+                <input
+                  type="text"
+                  placeholder="Search by title, ingredient, or tag (e.g., #easy)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    marginBottom: "20px",
+                    width: "100%",
+                    padding: "10px",
+                  }}
+                />
+                <RecipeList recipes={recipes} searchQuery={searchQuery} />
               </div>
             )}
-            {activeTab === 'instructions' && (
+            {activeTab === "instructions" && (
               <div>
-                <h2>Instructions</h2>
+                <h2>Grocery List</h2>
                 <p>Upload or edit instructions for your recipes.</p>
               </div>
             )}
           </div>
         </>
       )}
-
-      {/* Footer component */}
       <Footer />
     </div>
   );

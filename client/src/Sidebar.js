@@ -4,50 +4,62 @@ import {
   faHome,
   faUtensils,
   faBook,
-  faFileAlt,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Sidebar.css";
-import RecipeList from "./RecipeList";  // Import the RecipeList component
-import FullRecipe from "./FullRecipe";  // Import FullRecipe component for showing recipe details
+import RecipeList from "./RecipeList";
+import FullRecipe from "./FullRecipe";
 
-const Sidebar = ({ onTabClick, fetchRecipes }) => {
-  const [selectedRecipe, setSelectedRecipe] = useState(null);  // State to track the selected recipe
-  const [showRecipes, setShowRecipes] = useState(false);  // State to control when to show recipe cards
+const Sidebar = ({ onTabClick, recipes, searchQuery }) => {
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [activeTab, setActiveTab] = useState("home"); // Track active tab
 
-  // Function to handle showing recipe details
   const handleShowRecipeDetails = (recipe) => {
-    setSelectedRecipe(recipe);  // Set the selected recipe to display full details
+    setSelectedRecipe(recipe);
   };
 
-  // Function to handle the "recipes" tab click
-  const handleRecipesClick = () => {
-    onTabClick("recipes");
-    setShowRecipes(true);  // Show the recipe list
-    setSelectedRecipe(null);  // Reset selected recipe when clicking the tab
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    onTabClick(tab);
+    setSelectedRecipe(null); // Reset selected recipe when switching tabs
   };
 
   return (
     <div className="sidebar">
-      <div className="tab" onClick={() => onTabClick("home")}>
+      <div
+        className={`tab ${activeTab === "home" ? "active" : ""}`}
+        onClick={() => handleTabClick("home")}
+      >
         <FontAwesomeIcon icon={faHome} size="2x" />
       </div>
-      <div className="tab" onClick={() => onTabClick("ingredients")}>
+      <div
+        className={`tab ${activeTab === "ingredients" ? "active" : ""}`}
+        onClick={() => handleTabClick("ingredients")}
+      >
         <FontAwesomeIcon icon={faUtensils} size="2x" />
       </div>
-      <div className="tab" onClick={handleRecipesClick}>
+      <div
+        className={`tab ${activeTab === "recipes" ? "active" : ""}`}
+        onClick={() => handleTabClick("recipes")}
+      >
         <FontAwesomeIcon icon={faBook} size="2x" />
       </div>
-      <div className="tab" onClick={() => onTabClick("instructions")}>
-        <FontAwesomeIcon icon={faFileAlt} size="2x" />
+      <div
+        className={`tab ${activeTab === "instructions" ? "active" : ""}`}
+        onClick={() => handleTabClick("instructions")}
+      >
+        <FontAwesomeIcon icon={faList} size="2x" />
       </div>
 
-      {/* Render recipe list if "recipes" tab is clicked and no specific recipe is selected */}
-      {showRecipes && !selectedRecipe && (
-        <RecipeList fetchRecipes={fetchRecipes} showRecipeDetails={handleShowRecipeDetails} />
+      {selectedRecipe ? (
+        <FullRecipe recipe={selectedRecipe} />
+      ) : (
+        <RecipeList
+          recipes={recipes}
+          searchQuery={searchQuery}
+          showRecipeDetails={handleShowRecipeDetails}
+        />
       )}
-
-      {/* Render full recipe details if a recipe is selected */}
-      {selectedRecipe && <FullRecipe recipe={selectedRecipe} />}
     </div>
   );
 };

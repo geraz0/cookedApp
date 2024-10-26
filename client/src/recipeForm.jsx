@@ -10,7 +10,7 @@ const RecipeForm = () => {
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState(""); // For success/error messages
 
-  const lambdaUrl = "https://your-lambda-function-url"; 
+  const lambdaUrl = "https://your-lambda-function-url";
 
   // Handle the title input change
   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -175,7 +175,9 @@ const RecipeForm = () => {
       </div>
 
       {/* Message Display */}
-      {message && <p style={{ marginTop: "20px", color: "green" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "20px", color: "green" }}>{message}</p>
+      )}
     </form>
   );
 };

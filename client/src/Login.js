@@ -39,14 +39,13 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
 
       <div style={styles.buttonContainer}>
         <button onClick={handleLogin} style={styles.loginButton}>Login</button>
-        {/* Register button to switch to register view */}
         <button onClick={() => setIsRegisterView(true)} style={styles.registerButton}>Register</button>
       </div>
     </div>
   );
 };
 
-// Inline styles for the Login component
+// Inline styles with responsive adjustments
 const styles = {
   container: {
     display: 'flex',
@@ -57,14 +56,16 @@ const styles = {
     backgroundColor: '#f9f9f9',
     borderRadius: '10px',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '100%',
+    width: '90%', // Responsive width
     maxWidth: '400px',
     margin: '0 auto',
     marginTop: '50px',
+    boxSizing: 'border-box',
   },
   title: {
     fontSize: '24px',
     marginBottom: '20px',
+    textAlign: 'center',
   },
   formGroup: {
     width: '100%',
@@ -88,8 +89,10 @@ const styles = {
     justifyContent: 'space-between',
     width: '100%',
     marginTop: '20px',
+    gap: '10px', // Adds space between buttons
   },
   loginButton: {
+    flex: 1,
     padding: '10px 20px',
     fontSize: '16px',
     backgroundColor: '#007bff',
@@ -100,6 +103,7 @@ const styles = {
     transition: 'background-color 0.3s ease',
   },
   registerButton: {
+    flex: 1,
     padding: '10px 20px',
     fontSize: '16px',
     backgroundColor: '#28a745',

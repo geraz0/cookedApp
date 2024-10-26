@@ -1,6 +1,7 @@
 /* App.css */
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -8,6 +9,7 @@ html, body {
   box-sizing: border-box;
   overflow-x: hidden; /* Prevent horizontal scrolling */
 }
+
 .app-container {
   display: flex;
   box-sizing: border-box;
@@ -21,14 +23,14 @@ html, body {
 
 .app-content {
   flex-grow: 1;
-  margin-left: 70px; /* Keeps space for the sidebar */
-  margin-right: 20;   /* Remove margin on the right */
+  margin-left: 90px; /* Keeps space for the sidebar */
+  margin-right: 30px; /* Restores right margin */
   padding: 20px 30px;
   align-items: center;
   display: flex;
   flex-direction: column;
   background-color: #f7c59f;
-   /* Ensure the content covers full width minus sidebar */
+  width: calc(100% - 100px); /* Adjusts width to account for margins */
   box-sizing: border-box;
 }
 
@@ -43,22 +45,34 @@ html, body {
   transition: padding-left 0.3s ease; /* Smooth transition for padding-left */
 }
 
-form {
-  margin: 30px;
+/* Form and content section styles */
+form,
+.content-section {
   padding: 10px;
   background-color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
+  max-width: 800px; /* Ensure consistent max-width */
   border-radius: 10px;
 }
 
-h2, h3 {
+/* Specific adjustment for search bar container in cookbook */
+.cookbook-section {
+  max-width: 800px; /* Ensure same width as form */
+  width: 100%;
+  margin: 0 auto; /* Center content */
+  padding-right: 30px; /* Align with the right margin */
+}
+
+h2,
+h3 {
   color: #333;
   margin-bottom: 10px;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   border: 1px solid;
   border-radius: 4px;
   padding: 10px;

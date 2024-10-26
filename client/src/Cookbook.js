@@ -19,7 +19,7 @@ const Cookbook = ({ recipes, onBuildGroceryList }) => {
   const filteredRecipes = recipes.filter((recipe) => {
     const query = searchQuery.toLowerCase();
     return (
-      recipe.title.toLowerCase().includes(query) || 
+      recipe.title.toLowerCase().includes(query) ||
       recipe.ingredients.some((ingredient) =>
         ingredient.toLowerCase().includes(query)
       ) ||
@@ -33,7 +33,14 @@ const Cookbook = ({ recipes, onBuildGroceryList }) => {
       <h2>Cookbook</h2>
 
       {/* Search Bar with Icon */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: "20px", position: "relative" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "20px",
+          position: "relative",
+        }}
+      >
         <FontAwesomeIcon
           icon={faSearch}
           style={{

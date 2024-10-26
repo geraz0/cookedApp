@@ -6,36 +6,28 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Prevents body scroll */
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
+/* Ensures the app container is centered with a 50px margin around it */
 .app-container {
-  display: flex;
+  margin: 50px auto;
+  max-width: calc(100% - 100px); /* Full width minus margins */
+  max-height: calc(100vh - 100px); /* Full height minus margins */
+  overflow-y: auto; /* Independent vertical scroll */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  background: rgba(255, 240, 230, 0.75); /* Slightly lighter with transparency */
+  padding: 20px;
+  border-radius: 10px; /* Optional rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
   box-sizing: border-box;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f7c59f;
-  width: 100%; /* Ensures the container covers the full width */
-  margin: 0; /* No margins */
-  padding: 0; /* No padding */
+  position: relative;
 }
 
-.app-content {
-  flex-grow: 1;
-  margin-left: 90px; /* Keeps space for the sidebar */
-  margin-right: 30px; /* Restores right margin */
-  padding: 20px 30px;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  background-color: #f7c59f;
-  width: calc(100% - 100px); /* Adjusts width to account for margins */
-  box-sizing: border-box;
-}
-
+/* Header styling with increased transparency and a hint of white */
 .app-header {
-  background-color: #f7c59f;
+  background-color: rgba(255, 240, 230, 0.65); /* Lighter transparent header */
   padding: 20px;
   display: flex;
   box-sizing: border-box;
@@ -45,59 +37,72 @@ body {
   transition: padding-left 0.3s ease; /* Smooth transition for padding-left */
 }
 
-/* Form and content section styles */
-form,
-.content-section {
-  padding: 10px;
-  background-color: white;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px; /* Ensure consistent max-width */
-  border-radius: 10px;
-}
-
-/* Specific adjustment for search bar container in cookbook */
-.cookbook-section {
-  max-width: 800px; /* Ensure same width as form */
-  width: 100%;
-  margin: 0 auto; /* Center content */
-  padding-right: 30px; /* Align with the right margin */
-}
-
-h2,
-h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-input,
-select,
-textarea {
-  border: 1px solid;
-  border-radius: 4px;
-  padding: 10px;
-  width: 100%;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
+/* Footer styling with same margins as header and increased transparency */
 footer {
-  background-color: #f7c59f;
-  padding: 10px;
-  text-align: center;
+  background-color: rgba(255, 240, 230, 0.65); /* Lighter transparent footer */
+  padding: 20px;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+}
+
+/* Sidebar styling */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 50vh;
+  position: absolute;
+  top: 80px; /* Positioned below the header */
+  left: 0;
+  z-index: 1000;
+  justify-content: flex-start;
+  background-color: transparent; /* Sidebar with no background */
+}
+
+.tab {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  margin-bottom: 10px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  background-color: rgba(233, 236, 239, 0.9); /* Slightly transparent hover color */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tab.active {
+  background-color: rgba(173, 193, 120, 0.9); /* Transparent active tab color */
+  color: white;
+}
+
+/* Hamburger button styling */
+.hamburger-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333; /* Dark gray color for visibility */
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+
+/* Shift app-content when sidebar is visible */
+.app-content {
+  transition: margin-left 0.3s ease;
+}
+
+.content-shift {
+  margin-left: 150px; /* Adjust this value based on sidebar width */
 }

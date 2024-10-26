@@ -58,8 +58,7 @@ const styles = {
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
     width: '90%', // Responsive width
     maxWidth: '400px',
-    margin: '0 auto',
-    marginTop: '50px',
+    margin: '50px auto', // Uniform margin on all sides
     boxSizing: 'border-box',
   },
   title: {

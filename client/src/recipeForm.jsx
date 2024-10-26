@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const RecipeForm = () => {
+const RecipeForm = ({ onAddRecipe }) => {
   // State for the form inputs
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([
@@ -56,6 +56,18 @@ const RecipeForm = () => {
 
       if (response.ok) {
         const result = await response.json();
+        const newRecipe = {
+          id: result.id,
+          title,
+          ingredients,
+          instructions,
+          image,
+        };
+
+        // Add the new recipe to the Cookbook
+        onAddRecipe(newRecipe);
+
+        // Reset form fields and set success message
         setMessage("Recipe created successfully!");
         setTitle("");
         setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
@@ -168,7 +180,11 @@ const RecipeForm = () => {
       <div style={{ marginTop: "20px" }}>
         <button
           type="submit"
-          style={{ padding: "10px 20px", fontSize: "16px" }}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            marginBottom: "20px",
+          }}
         >
           Add Recipe
         </button>

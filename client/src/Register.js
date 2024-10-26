@@ -53,10 +53,9 @@ const styles = {
     backgroundColor: '#f9f9f9',
     borderRadius: '10px',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '100%',
+    width: '90%',
     maxWidth: '400px',
-    margin: '0 auto',
-    marginTop: '50px',
+    margin: '50px auto', // Uniform margin on all sides
   },
   title: {
     fontSize: '24px',
@@ -88,6 +87,8 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
+    width: '100%',
+    marginTop: '20px',
   },
 };
 

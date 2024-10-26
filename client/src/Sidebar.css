@@ -1,38 +1,38 @@
 /* Sidebar.css */
+
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-    height: 50vh;
-    background-color: #f7c59f;
-    position: fixed;
-    top: 10px;
-    left: 0;
-    z-index: 1000;
-    justify-content: flex-start;
-  }
-  
-  .tab {
-    width: 100%;
-    padding: 20px 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: white;
-    margin-bottom: 10px;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-  }
-  
-  .tab:hover {
-    background-color: #e9ecef;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-  }
-  
-  .tab.active {
-    background-color: #ADC178; /* Active tab color */
-    color: white;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 50vh;
+  position: absolute; /* Place it within app-container */
+  top: 200px; /* Adjust this value based on header height */
+  left: 0;
+  z-index: 1000;
+  justify-content: flex-start;
+  background-color: transparent; /* Remove background color */
+}
+
+.tab {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  margin-bottom: 10px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  background-color: #e9ecef;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tab.active {
+  background-color: #adc178; /* Active tab color */
+  color: white;
+}

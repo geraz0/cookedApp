@@ -7,21 +7,14 @@ import {
   faList,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Sidebar.css";
-import RecipeList from "./RecipeList";
-import FullRecipe from "./FullRecipe";
+import "./App.css";
 
-const Sidebar = ({ onTabClick, recipes, searchQuery }) => {
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [activeTab, setActiveTab] = useState("home"); // Track active tab
-
-  const handleShowRecipeDetails = (recipe) => {
-    setSelectedRecipe(recipe);
-  };
+const Sidebar = ({ onTabClick }) => {
+  const [activeTab, setActiveTab] = useState("home");
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     onTabClick(tab);
-    setSelectedRecipe(null); // Reset selected recipe when switching tabs
   };
 
   return (
@@ -33,33 +26,23 @@ const Sidebar = ({ onTabClick, recipes, searchQuery }) => {
         <FontAwesomeIcon icon={faHome} size="2x" />
       </div>
       <div
-        className={`tab ${activeTab === "ingredients" ? "active" : ""}`}
-        onClick={() => handleTabClick("ingredients")}
+        className={`tab ${activeTab === "new recipe" ? "active" : ""}`}
+        onClick={() => handleTabClick("new recipe")}
       >
         <FontAwesomeIcon icon={faUtensils} size="2x" />
       </div>
       <div
-        className={`tab ${activeTab === "recipes" ? "active" : ""}`}
-        onClick={() => handleTabClick("recipes")}
+        className={`tab ${activeTab === "cookbook" ? "active" : ""}`}
+        onClick={() => handleTabClick("cookbook")}
       >
         <FontAwesomeIcon icon={faBook} size="2x" />
       </div>
       <div
-        className={`tab ${activeTab === "instructions" ? "active" : ""}`}
-        onClick={() => handleTabClick("instructions")}
+        className={`tab ${activeTab === "grocery list" ? "active" : ""}`}
+        onClick={() => handleTabClick("grocery list")}
       >
         <FontAwesomeIcon icon={faList} size="2x" />
       </div>
-
-      {selectedRecipe ? (
-        <FullRecipe recipe={selectedRecipe} />
-      ) : (
-        <RecipeList
-          recipes={recipes}
-          searchQuery={searchQuery}
-          showRecipeDetails={handleShowRecipeDetails}
-        />
-      )}
     </div>
   );
 };

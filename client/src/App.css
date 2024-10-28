@@ -117,7 +117,7 @@ footer {
 @media (min-width: 1024px) {
   .app-container {
     max-width: 80%;
-    margin: 0 auto;
+    margin: 50px auto;
   }
 
   .sidebar {

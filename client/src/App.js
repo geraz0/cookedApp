@@ -2,7 +2,7 @@ import "./App.css";
 import React, { useState } from "react";
 import Login from "./Login";
 import Register from "./Register";
-import RecipeForm from "./RecipeForm";
+import RecipeForm from "./recipeForm";
 import Sidebar from "./Sidebar";
 import Cookbook from "./Cookbook";
 import GroceryList from "./GroceryList";

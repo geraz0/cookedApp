@@ -1,20 +1,19 @@
-// RecipeCard.js
-import React from "react";
+import React from 'react';
 
-const RecipeCard = ({ recipe, onClick, isSelected, onSelect }) => {
+const RecipeCard = ({ recipe }) => {
   return (
-    <div
-      className={`recipe-card ${isSelected ? "selected" : ""}`}
-      onClick={onClick}
-    >
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onChange={onSelect}
-        className="recipe-select-checkbox"
-      />
-      <img src={recipe.image} alt={recipe.title} style={{ width: "100%" }} />
+    <div className="recipe-card">
       <h3>{recipe.title}</h3>
+      <p><strong>Ingredients:</strong></p>
+      <ul>
+        {recipe.ingredients.map((ingredient, idx) => (
+          <li key={idx}>
+            {ingredient.quantity} {ingredient.unit} {ingredient.name}
+          </li>
+        ))}
+      </ul>
+      <p><strong>Instructions:</strong> {recipe.instructions}</p>
+      {recipe.image && <img src={URL.createObjectURL(recipe.image)} alt={recipe.title} />}
     </div>
   );
 };

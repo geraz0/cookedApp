@@ -1,38 +1,61 @@
 /* Sidebar.css */
+
+/* Sidebar container styles */
 .sidebar {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-    height: 50vh;
-    background-color: #f7c59f;
-    position: fixed;
-    top: 10px;
-    left: 0;
-    z-index: 1000;
-    justify-content: flex-start;
-  }
-  
-  .tab {
-    width: 100%;
-    padding: 20px 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: white;
-    margin-bottom: 10px;
-    border-radius: 0 10px 10px 0;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-  }
-  
-  .tab:hover {
-    background-color: #e9ecef;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
-  }
-  
-  .tab.active {
-    background-color: #ADC178; /* Active tab color */
-    color: white;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 50vh;
+  position: absolute;
+  top: 150px;
+  left: 0;
+  z-index: 1000;
+  justify-content: flex-start;
+  background-color: transparent; /* Fully transparent background */
+  box-shadow: none; /* Remove any shadow */
+  border: none; /* Ensure no border is applied */
+}
+
+/* Tab styling */
+.tab {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  margin-bottom: 10px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  background-color: rgba(233, 236, 239, 0.9); /* Slightly transparent hover color */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.tab.active {
+  background-color: rgba(173, 193, 120, 0.9); /* Green color only when active */
+  color: white;
+}
+
+/* Transition effects for hidden tabs */
+.tabs-container {
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 0; /* Collapses when closed */
+  opacity: 0;
+}
+
+.tabs-container.open {
+  max-height: 150px; /* Adjust based on the number of tabs */
+  opacity: 1;
+}
+
+.tabs-container.closed {
+  max-height: 0;
+  opacity: 0;
+}

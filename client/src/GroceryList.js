@@ -1,7 +1,7 @@
-// GroceryList.js
 import React, { useState } from "react";
 
-const GroceryList = ({ groceryItems }) => {
+const GroceryList = ({ groceryItems = [] }) => {
+  // Ensure groceryItems is always treated as an array
   const [groceryList, setGroceryList] = useState(
     groceryItems.map((item) => ({ ...item, checked: false }))
   );

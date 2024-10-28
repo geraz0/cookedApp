@@ -6,98 +6,125 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Prevents body scroll */
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .app-container {
   display: flex;
+  flex-direction: column; /* Arrange header, content, and footer vertically */
+  width: calc(100% - 100px); /* Full width minus 50px margin on each side */
+  height: calc(
+    100vh - 100px
+  ); /* Full height minus 50px margin on top and bottom */
+  margin: 50px auto; /* Centered with 50px margin */
+  padding: 20px; /* Inner padding */
+  background: rgba(
+    255,
+    240,
+    230,
+    0.75
+  ); /* Background color with transparency */
+  border-radius: 10px; /* Optional rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+  
   box-sizing: border-box;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #f7c59f;
-  width: 100%; /* Ensures the container covers the full width */
-  margin: 0; /* No margins */
-  padding: 0; /* No padding */
+  position: relative;
+  transition: all 0.3s ease; /* Smooth transition for layout adjustments */
 }
 
-.app-content {
-  flex-grow: 1;
-  margin-left: 90px; /* Keeps space for the sidebar */
-  margin-right: 30px; /* Restores right margin */
-  padding: 20px 30px;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  background-color: #f7c59f;
-  width: calc(100% - 100px); /* Adjusts width to account for margins */
-  box-sizing: border-box;
-}
-
+/* Header */
 .app-header {
-  background-color: #f7c59f;
-  padding: 20px;
   display: flex;
-  box-sizing: border-box;
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically */
+  background-color: rgba(255, 240, 230, 0.65); /* Slightly transparent header */
+  transition: padding 0.3s ease;
+}
+
+/* Footer */
+footer {
+  background-color: rgba(255, 240, 230, 0.65);
+  text-align: center;
+  transition: padding 0.3s ease; /* Smooth transition for padding */
+  flex-shrink: 0; /* Ensures footer stays at the bottom */
+}
+
+/* Sidebar styling */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: 50vh;
+  position: absolute;
+  top: 80px; /* Positioned below the header */
+  left: 0;
+  z-index: 1000;
+  justify-content: flex-start;
+  background-color: rgba(
+    255,
+    240,
+    230,
+    0.75
+  ); /* Match sidebar to app-container */
+  border-radius: 0 10px 10px 0; /* Smooth transition into app-container */
+  box-shadow: none; /* Remove any sidebar shadow */
+}
+
+/* Tab styling */
+.tab {
+  width: 100%;
+  padding: 20px 10px;
+  display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Full width */
-  transition: padding-left 0.3s ease; /* Smooth transition for padding-left */
-}
-
-/* Form and content section styles */
-form,
-.content-section {
-  padding: 10px;
-  background-color: white;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px; /* Ensure consistent max-width */
-  border-radius: 10px;
-}
-
-/* Specific adjustment for search bar container in cookbook */
-.cookbook-section {
-  max-width: 800px; /* Ensure same width as form */
-  width: 100%;
-  margin: 0 auto; /* Center content */
-  padding-right: 30px; /* Align with the right margin */
-}
-
-h2,
-h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-input,
-select,
-textarea {
-  border: 1px solid;
-  border-radius: 4px;
-  padding: 10px;
-  width: 100%;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 16px;
   cursor: pointer;
+  background-color: transparent; /* Blend seamlessly */
+  margin-bottom: 10px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: none; /* Remove shadow for seamless integration */
+  transition: all 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.tab:hover {
+  background-color: rgba(
+    233,
+    236,
+    239,
+    0.9
+  ); /* Slightly transparent hover color */
+  box-shadow: none; /* No shadow on hover */
 }
 
-footer {
-  background-color: #f7c59f;
-  padding: 10px;
-  text-align: center;
-  width: 100%;
+.tab.active {
+  background-color: rgba(173, 193, 120, 0.9); /* Active tab color */
+  color: white;
+}
+
+/* App Content */
+.app-content {
+  flex: 1; /* Expands to fill space between header and footer */
+  padding: 20px 70px;
+  margin: 10px 10px;
+
+  border-radius: 8px; /* Rounded corners similar to the form */
+  overflow-y: auto;
+  max-width: 800px; /* Center and limit width for form-like feel */
+  transition: margin 0.3s ease, padding 0.3s ease; /* Smooth transitions */
+}
+
+/* Media Query for Larger Screens (1024px and up) */
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    width: 120px; /* Widen the sidebar */
+  }
+
+  .tab {
+    padding: 25px 15px; /* Adjust padding for larger screens */
+  }
 }

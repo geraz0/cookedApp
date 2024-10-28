@@ -15,80 +15,70 @@ function App() {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    setShowSidebar(false);
+    setShowSidebar(false); // Hide sidebar after selecting a tab
   };
 
-// Handle login success by setting the main tabs view
-const handleLoginSuccess = () => {
-  setIsLoggedIn(true);
-  setIsRegisterView(false); // Ensure view resets to login if user logs in
-};
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setIsRegisterView(false);
+  };
 
-// Handle registration success by returning to the login screen
-const handleRegisterSuccess = () => {
-  setIsRegisterView(false); // Switch back to login after registering
-};
+  const handleRegisterSuccess = () => {
+    setIsRegisterView(false);
+  };
 
-return (
-  <div
-    style={{
-      backgroundImage: "url('/cottage.jpg')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      minHeight: "120vh",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    <div className="app-container">
-      <header className="app-header">
-        <img
-          src="/Logo.png"
-          alt="Cooked Logo"
-          style={{ width: "120px", height: "auto" }}
-        />
-      </header>
+  const toggleSidebar = () => {
+    setShowSidebar((prevShowSidebar) => !prevShowSidebar);
+  };
 
-      <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
-        {!isLoggedIn && !isRegisterView && (
-          <Login setIsLoggedIn={handleLoginSuccess} setIsRegisterView={setIsRegisterView} />
-        )}
-        {!isLoggedIn && isRegisterView && (
-          <Register setIsRegistered={handleRegisterSuccess} />
-        )}
+  return (
+    <div
+      style={{
+        backgroundImage: "url('/cottage.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "120vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div className="app-container">
+        <header className="app-header">
+          <img
+            src="/Logo.png"
+            alt="Cooked Logo"
+            style={{ width: "120px", height: "auto" }}
+          />
+        </header>
 
         {isLoggedIn && (
-          <>
-            {activeTab === "cookbook" && <Cookbook />}
-            {activeTab === "new recipe" && <RecipeForm />}
-            {activeTab === "grocery list" && <GroceryList />}
-          </>
+          <Sidebar onTabClick={handleTabClick} showSidebar={showSidebar} toggleSidebar={toggleSidebar} />
         )}
+
+        <div className="app-content">
+          {!isLoggedIn && !isRegisterView && (
+            <Login setIsLoggedIn={handleLoginSuccess} setIsRegisterView={setIsRegisterView} />
+          )}
+          {!isLoggedIn && isRegisterView && (
+            <Register setIsRegistered={handleRegisterSuccess} />
+          )}
+
+          {isLoggedIn && (
+            <>
+              {activeTab === "cookbook" && <Cookbook />}
+              {activeTab === "new recipe" && <RecipeForm />}
+              {activeTab === "grocery list" && <GroceryList />}
+            </>
+          )}
+        </div>
+
+        <footer style={{ textAlign: "center" }}>
+          <p>© 2024 Cooked. All rights reserved.</p>
+        </footer>
       </div>
-
-      <footer style={{ textAlign: "center" }}>
-        <p>© 2024 Cooked. All rights reserved.</p>
-      </footer>
     </div>
-  </div>
-);
-
+  );
 }
-
-const appStyle = {
-  backgroundImage: "url('/cottage.jpg')",
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundRepeat: "no-repeat",
-  minHeight: "100vh",
-  display: "flex",
-  flexDirection: "column",
-};
-
-const logoStyle = {
-  width: "100px",
-  height: "auto",
-};
 
 export default App;

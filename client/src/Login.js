@@ -22,6 +22,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
           onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
           placeholder="Enter your email"
+          autoComplete="email"  // Added autocomplete attribute
         />
       </div>
 
@@ -34,6 +35,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
           placeholder="Enter your password"
+          autoComplete="current-password"  // Added autocomplete attribute
         />
       </div>
 
@@ -110,8 +112,8 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
+    transition: 'background-color',
   },
 };
 
-export default Login;
+export default Login; 

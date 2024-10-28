@@ -1,17 +1,20 @@
 /* Sidebar.css */
 
+/* Sidebar container styles */
 .sidebar {
   display: flex;
   flex-direction: column;
   width: auto;
   height: 50vh;
-  position: absolute; /* Place it within app-container */
-  top: 200px; /* Adjust this value based on header height */
+  position: absolute;
+  top: 200px;
   left: 0;
   z-index: 1000;
   justify-content: flex-start;
-  background-color: transparent; /* Remove background color */
+  background-color: transparent;
 }
+
+/* Sidebar.css */
 
 .tab {
   width: 100%;
@@ -28,11 +31,31 @@
 }
 
 .tab:hover {
-  background-color: #e9ecef;
+  background-color: rgba(233, 236, 239, 0.9); /* Slightly transparent hover color */
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .tab.active {
-  background-color: #adc178; /* Active tab color */
+  background-color: rgba(173, 193, 120, 0.9); /* Green color only when active */
   color: white;
+}
+
+
+/* Transition effects for hidden tabs */
+.tabs-container {
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  max-height: 0; /* Collapses when closed */
+  opacity: 0;
+}
+
+.tabs-container.open {
+  max-height: 150px; /* Adjust based on the number of tabs */
+  opacity: 1;
+}
+
+.tabs-container.closed {
+  max-height: 0;
+  opacity: 0;
 }

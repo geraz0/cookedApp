@@ -1,4 +1,3 @@
-// App.js
 import "./App.css";
 import React, { useState } from "react";
 import Login from "./Login";
@@ -14,10 +13,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegisterView, setIsRegisterView] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-
-  const toggleSidebar = () => {
-    setShowSidebar((prevShowSidebar) => !prevShowSidebar);
-  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -41,23 +36,26 @@ function App() {
 
         {/* Render Sidebar only when logged in */}
         {isLoggedIn && (
-          <Sidebar onTabClick={handleTabClick} />
+          <Sidebar onTabClick={handleTabClick} setShowSidebar={setShowSidebar} showSidebar={showSidebar} />
         )}
 
-        {/* Render Login or Register views when not logged in */}
-        {!isLoggedIn && !isRegisterView && (
-          <Login setIsLoggedIn={setIsLoggedIn} setIsRegisterView={setIsRegisterView} />
-        )}
-        {!isLoggedIn && isRegisterView && <Register setIsRegistered={setIsLoggedIn} />}
+        {/* Main content container that shifts based on sidebar visibility */}
+        <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
+          {/* Render Login or Register views when not logged in */}
+          {!isLoggedIn && !isRegisterView && (
+            <Login setIsLoggedIn={setIsLoggedIn} setIsRegisterView={setIsRegisterView} />
+          )}
+          {!isLoggedIn && isRegisterView && <Register setIsRegistered={setIsLoggedIn} />}
 
-        {/* Render main content when logged in */}
-        {isLoggedIn && (
-          <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
-            {activeTab === "cookbook" && <Cookbook />}
-            {activeTab === "new recipe" && <RecipeForm />}
-            {activeTab === "grocery list" && <GroceryList />}
-          </div>
-        )}
+          {/* Render main content when logged in */}
+          {isLoggedIn && (
+            <>
+              {activeTab === "cookbook" && <Cookbook />}
+              {activeTab === "new recipe" && <RecipeForm />}
+              {activeTab === "grocery list" && <GroceryList />}
+            </>
+          )}
+        </div>
 
         <Footer />
       </div>

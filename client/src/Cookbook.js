@@ -15,18 +15,20 @@ const Cookbook = ({ recipes, onBuildGroceryList }) => {
     );
   };
 
-  // Filter recipes based on search query
-  const filteredRecipes = recipes.filter((recipe) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      recipe.title.toLowerCase().includes(query) ||
-      recipe.ingredients.some((ingredient) =>
-        ingredient.toLowerCase().includes(query)
-      ) ||
-      recipe.instructions.toLowerCase().includes(query) ||
-      recipe.tags?.some((tag) => tag.toLowerCase() === query)
-    );
-  });
+  // Check if recipes is defined and filter based on the search query
+  const filteredRecipes = recipes && Array.isArray(recipes)
+    ? recipes.filter((recipe) => {
+        const query = searchQuery.toLowerCase();
+        return (
+          recipe.title.toLowerCase().includes(query) ||
+          recipe.ingredients.some((ingredient) =>
+            ingredient.toLowerCase().includes(query)
+          ) ||
+          recipe.instructions.toLowerCase().includes(query) ||
+          recipe.tags?.some((tag) => tag.toLowerCase() === query)
+        );
+      })
+    : [];
 
   return (
     <div className="cookbook-section">

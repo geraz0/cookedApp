@@ -8,18 +8,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./Sidebar.css";
 
-const Sidebar = ({ onTabClick, setShowSidebar, showSidebar }) => {
+const Sidebar = ({ onTabClick, showSidebar, toggleSidebar }) => {
   const [activeTab, setActiveTab] = useState("");
 
   const handleMenuClick = () => {
-    setShowSidebar(!showSidebar); // Toggle sidebar visibility
-    setActiveTab((prevTab) => (prevTab === "menu" ? "" : "menu")); // Toggle menu tab active state
+    toggleSidebar();
   };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     onTabClick(tab);
-    setShowSidebar(false); // Close menu after selecting a tab
   };
 
   return (
@@ -32,7 +30,7 @@ const Sidebar = ({ onTabClick, setShowSidebar, showSidebar }) => {
         <FontAwesomeIcon icon={faBars} size="2x" />
       </div>
 
-      {/* Other Tabs, only visible when isMenuOpen is true */}
+      {/* Other Tabs, with transition based on showSidebar */}
       <div className={`tabs-container ${showSidebar ? "open" : "closed"}`}>
         <div
           className={`tab ${activeTab === "new recipe" ? "active" : ""}`}

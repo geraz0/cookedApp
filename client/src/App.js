@@ -18,30 +18,40 @@ function App() {
     setShowSidebar(false);
   };
 
-  // Handle login success by setting the main tabs view
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setIsRegisterView(false); // Ensure view resets to login if user logs out
-  };
+// Handle login success by setting the main tabs view
+const handleLoginSuccess = () => {
+  setIsLoggedIn(true);
+  setIsRegisterView(false); // Ensure view resets to login if user logs in
+};
 
-  // Handle registration success by returning to the login screen
-  const handleRegisterSuccess = () => {
-    setIsRegisterView(false); // Switch back to login after registering
-  };
+// Handle registration success by returning to the login screen
+const handleRegisterSuccess = () => {
+  setIsRegisterView(false); // Switch back to login after registering
+};
 
-  return (
-    <div className="app-container" style={appStyle}>
+return (
+  <div
+    style={{
+      backgroundImage: "url('/cottage.jpg')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      minHeight: "120vh",
+      display: "flex", // Ensure content fills the entire area
+      flexDirection: "column",
+    }}
+  >
+    <div className="app-container">
       <header className="app-header">
-        <img src="/Logo.png" alt="Cooked Logo" style={logoStyle} />
-      </header>
-
-      {isLoggedIn && (
-        <Sidebar
-          onTabClick={handleTabClick}
-          setShowSidebar={setShowSidebar}
-          showSidebar={showSidebar}
+        <img
+          src="/Logo.png"
+          alt="Cooked Logo"
+          style={{ width: "120px", height: "auto" }}
         />
-      )}
+      </header>
+    </div>
+  </div>
+);
 
       <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
         {!isLoggedIn && !isRegisterView && (

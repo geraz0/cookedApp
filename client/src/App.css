@@ -57,7 +57,7 @@ footer {
   width: auto;
   height: 50vh;
   position: absolute;
-  top: 80px; /* Positioned below the header */
+  
   left: 0;
   z-index: 1000;
   justify-content: flex-start;
@@ -105,11 +105,11 @@ footer {
 .app-content {
   flex: 1; /* Expands to fill space between header and footer */
   padding: 20px 70px;
-  margin: 10px 10px;
+  margin: 10px 30px;
 
   border-radius: 8px; /* Rounded corners similar to the form */
   overflow-y: auto;
-  max-width: 800px; /* Center and limit width for form-like feel */
+   /* Center and limit width for form-like feel */
   transition: margin 0.3s ease, padding 0.3s ease; /* Smooth transitions */
 }
 

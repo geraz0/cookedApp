@@ -19,11 +19,11 @@ const Register = ({ setIsRegistered }) => {
       })
       .then(data => {
         console.log('Registered:', data.username);
-        setIsRegistered(true);
+        setIsRegistered(true); // Takes user back to login screen
       })
       .catch(error => {
         console.log('Error:', error.error);
-        alert(error.error); // Displaying error to the user
+        alert(error.error); // Display error to the user
       });
   };
   

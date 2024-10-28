@@ -5,9 +5,26 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Add login logic here
-    console.log('Login clicked');
-    setIsLoggedIn(true); // Assuming successful login
+    // Assuming there is a login API endpoint
+    fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => Promise.reject(error));
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Logged in:', data.user);
+        setIsLoggedIn(true); // Only set to true if login is successful
+      })
+      .catch(error => {
+        console.log('Login error:', error.message);
+        alert(error.message); // Display error to the user
+      });
   };
 
   return (
@@ -22,7 +39,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
           onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
           placeholder="Enter your email"
-          autoComplete="email"  // Added autocomplete attribute
+          autoComplete="email"
         />
       </div>
 
@@ -35,7 +52,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
           placeholder="Enter your password"
-          autoComplete="current-password"  // Added autocomplete attribute
+          autoComplete="current-password"
         />
       </div>
 
@@ -47,7 +64,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
   );
 };
 
-// Inline styles with responsive adjustments
+// Inline styles
 const styles = {
   container: {
     display: 'flex',
@@ -58,9 +75,9 @@ const styles = {
     backgroundColor: '#f9f9f9',
     borderRadius: '10px',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-    width: '100%', // Responsive width
+    width: '100%',
     maxWidth: '400px',
-    margin: '50px auto', // Uniform margin on all sides
+    margin: '50px auto',
     boxSizing: 'border-box',
   },
   title: {
@@ -90,7 +107,7 @@ const styles = {
     justifyContent: 'space-between',
     width: '100%',
     marginTop: '20px',
-    gap: '10px', // Adds space between buttons
+    gap: '10px',
   },
   loginButton: {
     flex: 1,
@@ -112,8 +129,8 @@ const styles = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-    transition: 'background-color',
+    transition: 'background-color 0.3s ease',
   },
 };
 
-export default Login; 
+export default Login;

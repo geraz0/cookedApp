@@ -1,15 +1,13 @@
 require('dotenv').config();
-console.log(process.env.DATABASE_URL);  // This will help verify if DATABASE_URL is being read correctly
-
+console.log(process.env.DATABASE_URL); // Verify if DATABASE_URL is being read correctly
 
 const express = require('express');
 const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
 const bodyParser = require('body-parser');
-const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-
 
 app.use(bodyParser.json());
 
@@ -18,8 +16,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Recipe and Meal Plan API!');
 });
 
-
-
+// Register user
 app.post('/api/users', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -35,18 +32,37 @@ app.post('/api/users', async (req, res) => {
       return res.status(400).json({ error: 'Email is already registered' });
     }
 
-    // Hash password before saving
-    const bcrypt = require('bcrypt');
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create the new user
     const newUser = await Users.create({ username, email, password: hashedPassword });
     res.status(201).json(newUser);
 
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'An error occurred while creating the user' });
+  }
+});
+
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await Users.findOne({ where: { email } });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid email or password' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: 'Invalid email or password' });
+    }
+
+    res.status(200).json({ message: 'Login successful', user: { id: user.user_id, email: user.email } });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'An error occurred during login' });
   }
 });
 

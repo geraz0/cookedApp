@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Login from "./Login";
 import Register from "./Register";
 import RecipeForm from "./RecipeForm";
-import Footer from "./footer";
 import Sidebar from "./Sidebar";
 import Cookbook from "./Cookbook";
 import GroceryList from "./GroceryList";
@@ -25,39 +24,59 @@ function App() {
         backgroundImage: "url('/cottage.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        backgroundRepeat: "no-repeat",
         minHeight: "100vh",
+        display: "flex", // Ensure content fills the entire area
+        flexDirection: "column",
       }}
     >
-      <div className="app-container">
-        <header className="app-header">
-          <img src="/Logo.png" alt="Cooked Logo" style={{ width: "120px", height: "auto" }} />
-        </header>
+      <div>
+        <div className="app-container">
+          <header className="app-header">
+            <img
+              src="/Logo.png"
+              alt="Cooked Logo"
+              style={{ width: "100px", height: "auto" }}
+            />
+          </header>
 
-        {/* Render Sidebar only when logged in */}
-        {isLoggedIn && (
-          <Sidebar onTabClick={handleTabClick} setShowSidebar={setShowSidebar} showSidebar={showSidebar} />
-        )}
-
-        {/* Main content container that shifts based on sidebar visibility */}
-        <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
-          {/* Render Login or Register views when not logged in */}
-          {!isLoggedIn && !isRegisterView && (
-            <Login setIsLoggedIn={setIsLoggedIn} setIsRegisterView={setIsRegisterView} />
-          )}
-          {!isLoggedIn && isRegisterView && <Register setIsRegistered={setIsLoggedIn} />}
-
-          {/* Render main content when logged in */}
+          {/* Render Sidebar only when logged in */}
           {isLoggedIn && (
-            <>
-              {activeTab === "cookbook" && <Cookbook />}
-              {activeTab === "new recipe" && <RecipeForm />}
-              {activeTab === "grocery list" && <GroceryList />}
-            </>
+            <Sidebar
+              onTabClick={handleTabClick}
+              setShowSidebar={setShowSidebar}
+              showSidebar={showSidebar}
+            />
           )}
-        </div>
 
-        <Footer />
+          {/* Main content container that shifts based on sidebar visibility */}
+          <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
+            {/* Render Login or Register views when not logged in */}
+            {!isLoggedIn && !isRegisterView && (
+              <Login
+                setIsLoggedIn={setIsLoggedIn}
+                setIsRegisterView={setIsRegisterView}
+              />
+            )}
+            {!isLoggedIn && isRegisterView && (
+              <Register setIsRegistered={setIsLoggedIn} />
+            )}
+
+            {/* Render main content when logged in */}
+            {isLoggedIn && (
+              <>
+                {activeTab === "cookbook" && <Cookbook />}
+                {activeTab === "new recipe" && <RecipeForm />}
+                {activeTab === "grocery list" && <GroceryList />}
+              </>
+            )}
+          </div>
+
+          {/* Footer content moved here */}
+          <footer style={{ textAlign: "center" }}>
+            <p>© 2024 Cooked. All rights reserved.</p>
+          </footer>
+        </div>
       </div>
     </div>
   );

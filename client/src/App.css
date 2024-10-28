@@ -10,47 +10,44 @@ body {
   box-sizing: border-box;
 }
 
-/* Ensures the app container is centered with a 50px margin around it */
 .app-container {
-  margin: 50px auto;
-  max-width: calc(100% - 100px); /* Full width minus margins */
-  max-height: calc(100vh - 100px); /* Full height minus margins */
-  overflow-y: auto; /* Independent vertical scroll */
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  display: flex;
+  flex-direction: column; /* Arrange header, content, and footer vertically */
+  width: calc(100% - 100px); /* Full width minus 50px margin on each side */
+  height: calc(
+    100vh - 100px
+  ); /* Full height minus 50px margin on top and bottom */
+  margin: 50px auto; /* Centered with 50px margin */
+  padding: 20px; /* Inner padding */
   background: rgba(
     255,
     240,
     230,
     0.75
-  ); /* Slightly lighter with transparency */
-  padding: 20px;
+  ); /* Background color with transparency */
   border-radius: 10px; /* Optional rounded corners */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
+  
   box-sizing: border-box;
   position: relative;
+  transition: all 0.3s ease; /* Smooth transition for layout adjustments */
 }
 
-/* Header styling with increased transparency and a hint of white */
+/* Header */
 .app-header {
-  background-color: rgba(255, 240, 230, 0.65); /* Lighter transparent header */
-  padding: 20px;
   display: flex;
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Full width */
-  transition: padding-left 0.3s ease; /* Smooth transition for padding-left */
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically */
+  background-color: rgba(255, 240, 230, 0.65); /* Slightly transparent header */
+  transition: padding 0.3s ease;
 }
 
-/* Footer styling with same margins as header and increased transparency */
+/* Footer */
 footer {
-  background-color: rgba(255, 240, 230, 0.65); /* Lighter transparent footer */
-  padding: 20px;
-  display: flex;
-  box-sizing: border-box;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  background-color: rgba(255, 240, 230, 0.65);
+  text-align: center;
+  transition: padding 0.3s ease; /* Smooth transition for padding */
+  flex-shrink: 0; /* Ensures footer stays at the bottom */
 }
 
 /* Sidebar styling */
@@ -64,9 +61,17 @@ footer {
   left: 0;
   z-index: 1000;
   justify-content: flex-start;
-  background-color: transparent; /* Sidebar with no background */
+  background-color: rgba(
+    255,
+    240,
+    230,
+    0.75
+  ); /* Match sidebar to app-container */
+  border-radius: 0 10px 10px 0; /* Smooth transition into app-container */
+  box-shadow: none; /* Remove any sidebar shadow */
 }
 
+/* Tab styling */
 .tab {
   width: 100%;
   padding: 20px 10px;
@@ -74,10 +79,10 @@ footer {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+  background-color: transparent; /* Blend seamlessly */
   margin-bottom: 10px;
   border-radius: 0 10px 10px 0;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: none; /* Remove shadow for seamless integration */
   transition: all 0.3s ease;
 }
 
@@ -88,31 +93,38 @@ footer {
     239,
     0.9
   ); /* Slightly transparent hover color */
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: none; /* No shadow on hover */
 }
 
 .tab.active {
-  background-color: rgba(173, 193, 120, 0.9); /* Transparent active tab color */
+  background-color: rgba(173, 193, 120, 0.9); /* Active tab color */
   color: white;
 }
 
-/* Hamburger button styling */
-.hamburger-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #333; /* Dark gray color for visibility */
-  position: absolute;
-  left: 20px;
-  top: 20px;
-}
-
-/* Shift app-content when sidebar is visible */
+/* App Content */
 .app-content {
-  transition: margin-left 0.3s ease;
+  flex: 1; /* Expands to fill space between header and footer */
+  padding: 20px 70px;
+  margin: 10px 10px;
+
+  border-radius: 8px; /* Rounded corners similar to the form */
+  overflow-y: auto;
+  max-width: 800px; /* Center and limit width for form-like feel */
+  transition: margin 0.3s ease, padding 0.3s ease; /* Smooth transitions */
 }
 
-.content-shift {
-  margin-left: 70px; /* Adjust this value based on sidebar width */
+/* Media Query for Larger Screens (1024px and up) */
+@media (min-width: 1024px) {
+  .app-container {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .sidebar {
+    width: 120px; /* Widen the sidebar */
+  }
+
+  .tab {
+    padding: 25px 15px; /* Adjust padding for larger screens */
+  }
 }

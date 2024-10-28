@@ -7,15 +7,16 @@
   width: auto;
   height: 50vh;
   position: absolute;
-  top: 200px;
+  top: 150px;
   left: 0;
   z-index: 1000;
   justify-content: flex-start;
-  background-color: transparent;
+  background-color: transparent; /* Fully transparent background */
+  box-shadow: none; /* Remove any shadow */
+  border: none; /* Ensure no border is applied */
 }
 
-/* Sidebar.css */
-
+/* Tab styling */
 .tab {
   width: 100%;
   padding: 20px 10px;
@@ -39,7 +40,6 @@
   background-color: rgba(173, 193, 120, 0.9); /* Green color only when active */
   color: white;
 }
-
 
 /* Transition effects for hidden tabs */
 .tabs-container {

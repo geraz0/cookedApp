@@ -25,7 +25,7 @@ function App() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
+        minHeight: "120vh",
         display: "flex", // Ensure content fills the entire area
         flexDirection: "column",
       }}
@@ -36,7 +36,7 @@ function App() {
             <img
               src="/Logo.png"
               alt="Cooked Logo"
-              style={{ width: "100px", height: "auto" }}
+              style={{ width: "120px", height: "auto" }}
             />
           </header>
 

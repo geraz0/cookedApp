@@ -1,7 +1,11 @@
 require('dotenv').config();
+console.log(process.env.DATABASE_URL);  // This will help verify if DATABASE_URL is being read correctly
+
+
 const express = require('express');
-const { Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
+const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
 const bodyParser = require('body-parser');
+const { Op } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -83,7 +87,7 @@ app.put('/users/:id', async (req, res) => {
       // Check if the new username is already taken by another user
       if (username) {
         const existingUser = await Users.findOne({
-          where: { username, user_id: { [Sequelize.Op.ne]: userId } } // Exclude current user
+          where: { username, user_id: { [Op.ne]: userId } } // Exclude current user
         });
   
         if (existingUser) {
@@ -94,7 +98,7 @@ app.put('/users/:id', async (req, res) => {
       // Check if the new email is already registered to another user
       if (email) {
         const existingEmail = await Users.findOne({
-          where: { email, user_id: { [Sequelize.Op.ne]: userId } } // Exclude current user
+          where: { email, user_id: { [Op.ne]: userId } } // Exclude current user
         });
   
         if (existingEmail) {
@@ -378,7 +382,23 @@ app.delete('/mealplans/:mealPlanId/recipes/:recipeId', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Test the database connection first
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+
+    // Sync models after successful connection
+    return sequelize.sync({ force: true });
+  })
+  .then(() => {
+    console.log('Database & tables synced successfully');
+    
+    // Start the server after syncing
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.error('Unable to connect to the database:', error);
+  });
+

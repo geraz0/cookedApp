@@ -1,25 +1,18 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 //ssl false for testing
+//ssl true for deployment
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   dialectOptions: {
-    ssl: false
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // tells Sequelize and Node.js not to verify the SSL certificate’s authority
+    },
   },
   logging: false,
 });
-
-//ssl false for testing
-// const sequelize = new Sequelize(process.env.DATABASE_URL, {
-//     dialect: 'postgres',
-//     dialectOptions: {
-//       ssl: {
-//         require: true,
-//         rejectUnauthorized: false,
-//       },
-//     },
-//     logging: false,
-//   });
 
 // Define the Users model
 const Users = sequelize.define('Users', {
@@ -184,7 +177,9 @@ const MealPlanRecipes = sequelize.define('MealPlanRecipes', {
 });
 
 // Export all models
+// Export all models and the sequelize instance
 module.exports = {
+  sequelize, // instance of Sequelize, helpful for syncing and configuration
   Users,
   Recipes,
   Ingredients,
@@ -192,3 +187,4 @@ module.exports = {
   MealPlans,
   MealPlanRecipes,
 };
+

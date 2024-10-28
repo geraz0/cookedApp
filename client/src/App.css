@@ -104,7 +104,7 @@ footer {
 /* App Content */
 .app-content {
   flex: 1; /* Expands to fill space between header and footer */
-  padding: 20px 60px;
+  padding: 20px 50px;
   margin: 10px 30px;
 
   border-radius: 8px; /* Rounded corners similar to the form */

@@ -20,32 +20,36 @@ app.get('/', (req, res) => {
 
 
 
-// Create new user
-app.post('/users', async (req, res) => {
-    try {
-      const { username, email, password } = req.body;
-  
-      // Check if the username or email already exists
-      const existingUser = await Users.findOne({ where: { username } });
-      const existingEmail = await Users.findOne({ where: { email } });
-  
-      if (existingUser) {
-        return res.status(400).json({ error: 'Username is already taken' });
-      }
-  
-      if (existingEmail) {
-        return res.status(400).json({ error: 'Email is already registered' });
-      }
-  
-      // If both are unique, create a new user
-      const newUser = await Users.create({ username, email, password });
-      res.status(201).json(newUser);
-  
-    } catch (error) {
-      console.error('Error creating user:', error);
-      res.status(500).json({ error: 'An error occurred while creating the user' });
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    const existingUser = await Users.findOne({ where: { username } });
+    const existingEmail = await Users.findOne({ where: { email } });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username is already taken' });
     }
-  });
+
+    if (existingEmail) {
+      return res.status(400).json({ error: 'Email is already registered' });
+    }
+
+    // Hash password before saving
+    const bcrypt = require('bcrypt');
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create the new user
+    const newUser = await Users.create({ username, email, password: hashedPassword });
+    res.status(201).json(newUser);
+
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'An error occurred while creating the user' });
+  }
+});
+
 
 // Get all users
 app.get('/users', async (req, res) => {
@@ -70,6 +74,35 @@ app.get('/users/:id', async (req, res) => {
     res.status(500).json({ error: 'Error fetching user' });
   }
 });
+
+// Get a specific user by email
+app.get('/users/email/:email', async (req, res) => {
+    try {
+      const user = await Users.findOne({ where: { email: req.params.email } });
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching user' });
+    }
+  });
+
+
+  // Get a specific user by username
+app.get('/users/username/:username', async (req, res) => {
+    try {
+      const user = await Users.findOne({ where: { username: req.params.username } });
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: 'User not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching user' });
+    }
+  });
 
 // Update a user
 app.put('/users/:id', async (req, res) => {

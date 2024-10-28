@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import imageCompression from 'browser-image-compression';
+
 
 const RecipeForm = ({ onAddRecipe }) => {
   // State for the form inputs
@@ -8,6 +10,7 @@ const RecipeForm = ({ onAddRecipe }) => {
   ]);
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState(""); // For success/error messages
 
   const lambdaUrl = "https://your-lambda-function-url";
@@ -30,8 +33,31 @@ const RecipeForm = ({ onAddRecipe }) => {
     setIngredients(newIngredients);
   };
 
-  // Handle image upload
-  const handleImageUpload = (e) => setImage(e.target.files[0]);
+  // // Handle image upload
+  // const handleImageUpload = (e) => setImage(e.target.files[0]);
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      };
+
+      try {
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.readAsDataURL(compressedFile);
+        reader.onloadend = () => {
+          setImage(compressedFile);
+          setImagePreview(reader.result);
+        };
+      } catch (error) {
+        console.error('Error compressing the image', error);
+      }
+    }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -73,6 +99,7 @@ const RecipeForm = ({ onAddRecipe }) => {
         setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
         setInstructions("");
         setImage(null);
+        setImagePreview(null);
       } else {
         setMessage(`Failed to create recipe: ${response.statusText}`);
       }

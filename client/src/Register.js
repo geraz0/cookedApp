@@ -2,13 +2,31 @@ import React, { useState } from 'react';
 
 const Register = ({ setIsRegistered }) => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    // Add registration logic here
-    console.log('Registered:', username, password);
-    setIsRegistered(true); // Assuming the registration is successful
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password })
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(error => Promise.reject(error));
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Registered:', data.username);
+        setIsRegistered(true);
+      })
+      .catch(error => {
+        console.log('Error:', error.error);
+        alert(error.error); // Displaying error to the user
+      });
   };
+  
 
   return (
     <div style={styles.container}>
@@ -22,6 +40,18 @@ const Register = ({ setIsRegistered }) => {
           onChange={(e) => setUsername(e.target.value)}
           style={styles.input}
           placeholder="Enter your username"
+        />
+      </div>
+
+      <div style={styles.formGroup}>
+        <label style={styles.label} htmlFor="username">Email:</label>
+        <input
+          type="text"
+          id="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={styles.input}
+          placeholder="Enter your email"
         />
       </div>
 

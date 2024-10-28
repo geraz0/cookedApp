@@ -37,7 +37,7 @@ return (
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       minHeight: "120vh",
-      display: "flex", // Ensure content fills the entire area
+      display: "flex",
       flexDirection: "column",
     }}
   >
@@ -49,9 +49,6 @@ return (
           style={{ width: "120px", height: "auto" }}
         />
       </header>
-    </div>
-  </div>
-);
 
       <div className={`app-content ${showSidebar ? "content-shift" : ""}`}>
         {!isLoggedIn && !isRegisterView && (
@@ -74,7 +71,9 @@ return (
         <p>© 2024 Cooked. All rights reserved.</p>
       </footer>
     </div>
-  );
+  </div>
+);
+
 }
 
 const appStyle = {

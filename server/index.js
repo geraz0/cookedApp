@@ -437,7 +437,7 @@ sequelize.authenticate()
     console.log('Database connection has been established successfully.');
 
     // Sync models after successful connection
-    return sequelize.sync({ force: true });
+    return sequelize.sync({ alter: true });
   })
   .then(() => {
     console.log('Database & tables synced successfully');

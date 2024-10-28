@@ -5,7 +5,6 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Assuming there is a login API endpoint
     fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

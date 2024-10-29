@@ -21,6 +21,7 @@ function App() {
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
     setIsRegisterView(false);
+    setActiveTab("cookbook"); // Navigate to Cookbook after successful login
   };
 
   const handleRegisterSuccess = () => {

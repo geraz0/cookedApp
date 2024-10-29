@@ -5,6 +5,7 @@ const express = require('express');
 const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -125,45 +126,45 @@ app.put('/users/:id', async (req, res) => {
     try {
       const { username, email, password } = req.body;
       const userId = req.params.id;
-  
+
       // Find the user by ID
       const user = await Users.findByPk(userId);
-  
+
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-  
+
       // Check if the new username is already taken by another user
       if (username) {
         const existingUser = await Users.findOne({
           where: { username, user_id: { [Op.ne]: userId } } // Exclude current user
         });
-  
+
         if (existingUser) {
           return res.status(400).json({ error: 'Username is already taken by another user' });
         }
       }
-  
+
       // Check if the new email is already registered to another user
       if (email) {
         const existingEmail = await Users.findOne({
           where: { email, user_id: { [Op.ne]: userId } } // Exclude current user
         });
-  
+
         if (existingEmail) {
           return res.status(400).json({ error: 'Email is already registered by another user' });
         }
       }
-  
+
       // Update the user with the new values, if they are provided
       user.username = username || user.username;
       user.email = email || user.email;
       user.password = password || user.password; // Add logic for hashing passwords later
-  
+
       await user.save();
-  
+
       res.status(200).json(user);
-  
+
     } catch (error) {
       console.error('Error updating user:', error);
       res.status(500).json({ error: 'An error occurred while updating the user' });

@@ -27,6 +27,10 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
     ]);
   };
 
+  const handleRemoveIngredient = (index) => {
+    setIngredients(ingredients.filter((_, i) => i !== index));
+  };
+
   // Handle image upload and compression
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -51,10 +55,10 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
     }
   };
 
-  //submit to reicipes, ingredients, and recipeingredients dbs 
+  //submit to reicipes, ingredients, and recipeingredients dbs
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formData = {
       recipe_name: title,
       instructions,
@@ -62,33 +66,35 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
       image,
       user_id: uid,
     };
-  
+
     try {
       // Step 1: Create the recipe and get recipe_id
-      const recipeResponse = await fetch('/api/recipes', {
+      const recipeResponse = await fetch("/api/recipes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (!recipeResponse.ok) {
-        throw new Error(`Failed to create recipe: ${recipeResponse.statusText}`);
+        throw new Error(
+          `Failed to create recipe: ${recipeResponse.statusText}`
+        );
       }
-  
+
       const createdRecipe = await recipeResponse.json();
       const recipeId = createdRecipe.recipe_id;
-  
+
       // Step 2: Process each ingredient to ensure it has ingredient_id and quantity
       const ingredientIds = await Promise.all(
         ingredients.map(async (ingredient) => {
           // Log the initial ingredient data
-          console.log('Processing ingredient:', ingredient);
-  
+          console.log("Processing ingredient:", ingredient);
+
           if (!ingredient.ingredient_id) {
             // Check if ingredient exists in the database or create it
-            const ingredientResponse = await fetch('/api/ingredients', {
+            const ingredientResponse = await fetch("/api/ingredients", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -98,11 +104,13 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
                 unit: ingredient.unit,
               }),
             });
-  
+
             if (!ingredientResponse.ok) {
-              throw new Error(`Failed to create or retrieve ingredient: ${ingredientResponse.statusText}`);
+              throw new Error(
+                `Failed to create or retrieve ingredient: ${ingredientResponse.statusText}`
+              );
             }
-  
+
             const ingredientData = await ingredientResponse.json();
             return {
               ingredient_id: ingredientData.ingredient_id,
@@ -117,17 +125,20 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
           }
         })
       );
-  
+
       // Step 3: Verify ingredient data
       ingredientIds.forEach((ing, index) => {
         if (!ing.ingredient_id || !ing.quantity) {
-          console.error(`Ingredient at index ${index} is missing required properties`, ing);
+          console.error(
+            `Ingredient at index ${index} is missing required properties`,
+            ing
+          );
           throw new Error("Ingredient data is incomplete");
         }
       });
-  
+
       // Step 4: Link ingredients to the recipe in RecipeIngredients
-      const linkResponse = await fetch('/api/recipeingredients', {
+      const linkResponse = await fetch("/api/recipeingredients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,11 +148,13 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
           ingredients: ingredientIds,
         }),
       });
-  
+
       if (!linkResponse.ok) {
-        throw new Error(`Failed to link ingredients to recipe: ${linkResponse.statusText}`);
+        throw new Error(
+          `Failed to link ingredients to recipe: ${linkResponse.statusText}`
+        );
       }
-  
+
       // Success message and reset form fields
       setMessage("Recipe created successfully!");
       onAddRecipe(createdRecipe);
@@ -151,17 +164,17 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
       setInstructions("");
       setImage(null);
       setImagePreview(null);
-  
     } catch (error) {
       setMessage(`Error submitting the form: ${error.message}`);
       console.error("Form submission error:", error);
     }
   };
-  
-
 
   return (
-    <form onSubmit={handleSubmit} style={{ textAlign: "center", marginTop: "20px" }}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ textAlign: "center", marginTop: "20px" }}
+    >
       <h2>Add a New Recipe</h2>
 
       {/* Recipe Title Input */}
@@ -171,7 +184,12 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
           placeholder="Recipe Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ width: "60%", padding: "10px", fontSize: "16px" }}
+          style={{
+            width: "60%",
+            margin: "20px",
+            padding: "10px",
+            fontSize: "16px",
+          }}
           required
         />
       </div>
@@ -222,16 +240,28 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
               <option value="Select unit" disabled>
                 Select unit
               </option>
+              <option value="unit">unit</option>
               <option value="g">grams</option>
               <option value="ml">milliliters</option>
               <option value="tbsp">tablespoons</option>
               <option value="tsp">teaspoons</option>
               <option value="cup">cups</option>
             </select>
+            <button
+              type="button"
+              onClick={() => handleRemoveIngredient(index)}
+              style={{ marginLeft: "5px" }}
+            >
+              Remove
+            </button>
           </div>
         ))}
-        <button type="button" onClick={handleAddIngredient} style={{ marginTop: "10px", padding: "5px 15px" }}>
-          Add Ingredient
+        <button
+          type="button"
+          onClick={handleAddIngredient}
+          style={{ marginTop: "10px", padding: "5px 15px" }}
+        >
+          Add Another Ingredient
         </button>
       </div>
 
@@ -256,18 +286,33 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
       <div style={{ margin: "20px", marginRight: "40px" }}>
         <h3>Recipe Image</h3>
         <input type="file" accept="image/*" onChange={handleImageUpload} />
-        {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100px", marginTop: "10px" }} />}
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            style={{ width: "100px", marginTop: "10px" }}
+          />
+        )}
       </div>
 
       {/* Submit Button */}
       <div style={{ marginTop: "20px" }}>
-        <button type="submit" style={{ padding: "10px 20px", fontSize: "16px", marginBottom: "20px" }}>
+        <button
+          type="submit"
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            marginBottom: "20px",
+          }}
+        >
           Add Recipe
         </button>
       </div>
 
       {/* Message Display */}
-      {message && <p style={{ marginTop: "20px", color: "green" }}>{message}</p>}
+      {message && (
+        <p style={{ marginTop: "20px", color: "green" }}>{message}</p>
+      )}
     </form>
   );
 };

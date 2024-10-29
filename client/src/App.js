@@ -129,15 +129,18 @@ function App() {
       }}
     >
       <div className="app-container">
-        <header className="app-header">
-          <img src="/Logo.png" alt="Cooked Logo" style={{ width: "120px", height: "auto" }} />
-          {isLoggedIn && (
-            <div>
-              <span>Welcome, {username}!</span>
-              <button onClick={handleLogout} style={{ marginLeft: "20px" }}>Logout</button>
-            </div>
-          )}
-        </header>
+      <header className="app-header">
+  <img src="/Logo.png" alt="Cooked Logo" className="header-logo" style={{ width: "120px", height: "auto" }} />
+  {isLoggedIn && (
+  <div className="welcome-container">
+    <span className="welcome-text">Welcome, {username}!</span>
+    <button onClick={handleLogout} className="logout-button">Logout</button>
+  </div>
+)}
+
+</header>
+
+
 
         {isLoggedIn && (
           <Sidebar onTabClick={handleTabClick} showSidebar={showSidebar} toggleSidebar={toggleSidebar} />

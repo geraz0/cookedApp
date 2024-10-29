@@ -43,13 +43,13 @@ const Sidebar = ({ onTabClick, showSidebar, toggleSidebar }) => {
           className={`tab ${activeTab === "cookbook" ? "active" : ""}`}
           onClick={() => handleTabClick("cookbook")}
         >
-          <FontAwesomeIcon icon={faUtensils} size="2x" />
+          <FontAwesomeIcon icon={faBook} size="2x" />
         </div>
         <div
           className={`tab ${activeTab === "mealplan" ? "active" : ""}`}
           onClick={() => handleTabClick("mealplan")}
         >
-          <FontAwesomeIcon icon={faBook} size="2x" />
+          <FontAwesomeIcon icon={faUtensils} size="2x" />
         </div>
         <div
           className={`tab ${activeTab === "grocery list" ? "active" : ""}`}

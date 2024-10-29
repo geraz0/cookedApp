@@ -293,16 +293,30 @@ app.delete('api/recipes/:id', async (req, res) => {
 
 // ------ INGREDIENTS ROUTES ------ //
 
-// Create new ingredient
+// Create new ingredient or return existing one if already in db
 app.post('/api/ingredients', async (req, res) => {
   try {
     const { ingredient_name, unit } = req.body;
+
+    // check if ingredient already exists with same name and unit and if so just return that
+    const existingIngredient = await Ingredients.findOne({
+      where: { ingredient_name, unit }
+    });
+
+    if (existingIngredient) {
+      return res.status(200).json(existingIngredient);
+    }
+
+    // if not already in db then create it
     const newIngredient = await Ingredients.create({ ingredient_name, unit });
     res.status(201).json(newIngredient);
+
   } catch (error) {
+    console.error('Error creating ingredient:', error);
     res.status(500).json({ error: 'Error creating ingredient' });
   }
 });
+
 
 // Get all ingredients
 app.get('/api/ingredients', async (req, res) => {
@@ -329,36 +343,132 @@ app.get('/api/ingredients/:id', async (req, res) => {
 });
 
 // ------ RECIPE INGREDIENTS ROUTES ------ //
+// Add ingredients to RecipeIngredients table linked by recipe_id
+app.post('/api/recipeingredients', async (req, res) => {
+  const { recipe_id, ingredients } = req.body;
 
-// Add ingredients to a recipe
-app.post('/api/recipes/:recipeId/ingredients', async (req, res) => {
+  if (!recipe_id || !ingredients || !Array.isArray(ingredients)) {
+    return res.status(400).json({ error: "Missing or invalid recipe_id or ingredients data" });
+  }
+
   try {
-    const { ingredients } = req.body; // Array of { ingredient_id, quantity }
-    const recipeId = req.params.recipeId;
+    // Process each ingredient to ensure it has the correct properties
+    const ingredientPromises = ingredients.map(async (ingredient, index) => {
+      // Validate that each ingredient has the necessary fields
+      if (!ingredient.ingredient_id || !ingredient.quantity) {
+        console.error(`Ingredient at index ${index} is missing required properties:`, ingredient);
+        throw new Error("Ingredient data is incomplete");
+      }
 
-    for (let ingredient of ingredients) {
-      await RecipeIngredients.create({
-        recipe_id: recipeId,
+      // Add entry to RecipeIngredients table with recipe_id, ingredient_id, and quantity
+      return RecipeIngredients.create({
+        recipe_id,
         ingredient_id: ingredient.ingredient_id,
         quantity: ingredient.quantity,
       });
-    }
+    });
 
-    res.status(201).json({ message: 'Ingredients added to recipe' });
+    // Wait for all ingredient processing promises to complete
+    await Promise.all(ingredientPromises);
+
+    res.status(201).json({ message: 'Ingredients successfully added to the recipe' });
   } catch (error) {
+    console.error('Error adding ingredients to recipe:', error);
     res.status(500).json({ error: 'Error adding ingredients to recipe' });
   }
 });
 
-// Get all ingredients for a recipe
+
+
+// Get all ingredients for a specific recipe by recipeId
 app.get('/api/recipes/:recipeId/ingredients', async (req, res) => {
+  const { recipeId } = req.params;
+
   try {
-    const ingredients = await RecipeIngredients.findAll({ where: { recipe_id: req.params.recipeId } });
+    // Find all ingredients for the given recipeId
+    const recipeIngredients = await RecipeIngredients.findAll({
+      where: { recipe_id: recipeId },
+      include: [
+        {
+          model: Ingredients,
+          attributes: ['ingredient_name', 'unit'], // Select ingredient details to return
+        },
+      ],
+      attributes: ['quantity'], // Select only the quantity from RecipeIngredients
+    });
+
+    if (!recipeIngredients.length) {
+      return res.status(404).json({ error: 'No ingredients found for this recipe' });
+    }
+
+    // Format the response to include both ingredient details and quantity
+    const ingredients = recipeIngredients.map((item) => ({
+      name: item.Ingredients.ingredient_name,
+      unit: item.Ingredients.unit,
+      quantity: item.quantity,
+    }));
+
     res.status(200).json(ingredients);
   } catch (error) {
+    console.error('Error fetching ingredients for recipe:', error);
     res.status(500).json({ error: 'Error fetching ingredients for recipe' });
   }
 });
+
+
+// Edit ingredients for a specific recipe by recipeId
+app.put('/api/recipes/:recipeId/ingredients', async (req, res) => {
+  const { recipeId } = req.params;
+  const { ingredients } = req.body; // Expecting an array of ingredients with { name, unit, quantity }
+
+  if (!ingredients || !Array.isArray(ingredients)) {
+    return res.status(400).json({ error: "Invalid ingredients data" });
+  }
+
+  try {
+    const ingredientPromises = ingredients.map(async (ingredient) => {
+      // Check if the ingredient exists in the Ingredients table
+      let existingIngredient = await Ingredients.findOne({
+        where: { ingredient_name: ingredient.name, unit: ingredient.unit },
+      });
+
+      // If the ingredient doesn’t exist, create it in the Ingredients table
+      if (!existingIngredient) {
+        existingIngredient = await Ingredients.create({
+          ingredient_name: ingredient.name,
+          unit: ingredient.unit,
+        });
+      }
+
+      // Check if this ingredient is already linked to the recipe in RecipeIngredients
+      const recipeIngredient = await RecipeIngredients.findOne({
+        where: { recipe_id: recipeId, ingredient_id: existingIngredient.ingredient_id },
+      });
+
+      if (recipeIngredient) {
+        // If it exists, update the quantity
+        await recipeIngredient.update({ quantity: ingredient.quantity });
+      } else {
+        // If it doesn’t exist, create a new entry in RecipeIngredients
+        await RecipeIngredients.create({
+          recipe_id: recipeId,
+          ingredient_id: existingIngredient.ingredient_id,
+          quantity: ingredient.quantity,
+        });
+      }
+    });
+
+    // Wait for all updates to complete
+    await Promise.all(ingredientPromises);
+
+    res.status(200).json({ message: 'Ingredients updated successfully' });
+  } catch (error) {
+    console.error('Error updating ingredients for recipe:', error);
+    res.status(500).json({ error: 'Error updating ingredients for recipe' });
+  }
+});
+
+
 
 // ------ MEAL PLANS ROUTES ------ //
 

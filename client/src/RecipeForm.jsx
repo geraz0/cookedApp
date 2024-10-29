@@ -12,7 +12,6 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
   const [message, setMessage] = useState("");
   const [description, setDescription] = useState("");
 
-
   // Handle ingredient input changes
   const handleIngredientChange = (index, field, value) => {
     const newIngredients = [...ingredients];
@@ -52,46 +51,114 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
     }
   };
 
-  // Handle form submission
+  //submit to reicipes, ingredients, and recipeingredients dbs 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const formData = {
       recipe_name: title,
       instructions,
-      ingredients,
       description,
       image,
       user_id: uid,
     };
-
+  
     try {
-      const response = await fetch('/api/recipes', {
+      // Step 1: Create the recipe and get recipe_id
+      const recipeResponse = await fetch('/api/recipes', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        onAddRecipe(result);
-
-        setMessage("Recipe created successfully!");
-        setTitle("");
-        setDescription("");
-        setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
-        setInstructions("");
-        setImage(null);
-        setImagePreview(null);
-      } else {
-        setMessage(`Failed to create recipe: ${response.statusText}`);
+  
+      if (!recipeResponse.ok) {
+        throw new Error(`Failed to create recipe: ${recipeResponse.statusText}`);
       }
+  
+      const createdRecipe = await recipeResponse.json();
+      const recipeId = createdRecipe.recipe_id;
+  
+      // Step 2: Process each ingredient to ensure it has ingredient_id and quantity
+      const ingredientIds = await Promise.all(
+        ingredients.map(async (ingredient) => {
+          // Log the initial ingredient data
+          console.log('Processing ingredient:', ingredient);
+  
+          if (!ingredient.ingredient_id) {
+            // Check if ingredient exists in the database or create it
+            const ingredientResponse = await fetch('/api/ingredients', {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                ingredient_name: ingredient.name,
+                unit: ingredient.unit,
+              }),
+            });
+  
+            if (!ingredientResponse.ok) {
+              throw new Error(`Failed to create or retrieve ingredient: ${ingredientResponse.statusText}`);
+            }
+  
+            const ingredientData = await ingredientResponse.json();
+            return {
+              ingredient_id: ingredientData.ingredient_id,
+              quantity: ingredient.quantity,
+            };
+          } else {
+            // If ingredient_id already exists
+            return {
+              ingredient_id: ingredient.ingredient_id,
+              quantity: ingredient.quantity,
+            };
+          }
+        })
+      );
+  
+      // Step 3: Verify ingredient data
+      ingredientIds.forEach((ing, index) => {
+        if (!ing.ingredient_id || !ing.quantity) {
+          console.error(`Ingredient at index ${index} is missing required properties`, ing);
+          throw new Error("Ingredient data is incomplete");
+        }
+      });
+  
+      // Step 4: Link ingredients to the recipe in RecipeIngredients
+      const linkResponse = await fetch('/api/recipeingredients', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recipe_id: recipeId,
+          ingredients: ingredientIds,
+        }),
+      });
+  
+      if (!linkResponse.ok) {
+        throw new Error(`Failed to link ingredients to recipe: ${linkResponse.statusText}`);
+      }
+  
+      // Success message and reset form fields
+      setMessage("Recipe created successfully!");
+      onAddRecipe(createdRecipe);
+      setTitle("");
+      setDescription("");
+      setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
+      setInstructions("");
+      setImage(null);
+      setImagePreview(null);
+  
     } catch (error) {
       setMessage(`Error submitting the form: ${error.message}`);
+      console.error("Form submission error:", error);
     }
   };
+  
+
 
   return (
     <form onSubmit={handleSubmit} style={{ textAlign: "center", marginTop: "20px" }}>
@@ -118,7 +185,6 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
           required
         />
       </div>
-
 
       {/* Ingredients Section */}
       <div>
@@ -189,7 +255,7 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
       {/* Image Upload */}
       <div style={{ margin: "20px", marginRight: "40px" }}>
         <h3>Recipe Image</h3>
-        <input type="file" accept="public/*" onChange={handleImageUpload} />
+        <input type="file" accept="image/*" onChange={handleImageUpload} />
         {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100px", marginTop: "10px" }} />}
       </div>
 

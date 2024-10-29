@@ -22,15 +22,18 @@ const Cookbook = ({ recipes }) => {
   };
 
   // Filter recipes based on search query
-  const filteredRecipes = recipes && Array.isArray(recipes)
+  const filteredRecipes = recipes
     ? recipes.filter((recipe) => {
         const query = searchQuery.toLowerCase();
+
         return (
-          recipe.title.toLowerCase().includes(query) ||
-          recipe.ingredients.some((ingredient) =>
-            ingredient.toLowerCase().includes(query)
+          recipe.title?.toLowerCase().includes(query) ||
+          recipe.ingredients?.some((ingredient) =>
+            `${ingredient.name} ${ingredient.quantity} ${ingredient.unit}`
+              .toLowerCase()
+              .includes(query)
           ) ||
-          recipe.instructions.toLowerCase().includes(query) ||
+          recipe.instructions?.toLowerCase().includes(query) ||
           recipe.tags?.some((tag) => tag.toLowerCase() === query)
         );
       })
@@ -84,10 +87,7 @@ const Cookbook = ({ recipes }) => {
         ))}
       </div>
 
-      <button
-        onClick={onBuildGroceryList}
-        className="build-grocery-button"
-      >
+      <button onClick={onBuildGroceryList} className="build-grocery-button">
         Build Grocery List
       </button>
     </div>

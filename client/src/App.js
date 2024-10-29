@@ -16,10 +16,11 @@ function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [recipes, setRecipes] = useState([]);
 
-  // Update login status based on uid presence in localStorage and grab username from db to display
+  // Update login status based on uid presence in localStorage
   useEffect(() => {
     if (uid) {
       setIsLoggedIn(true);
+      fetchRecipes(uid); // Fetch recipes on component mount or login
     }
   }, [uid]);
 
@@ -28,6 +29,7 @@ function App() {
     setShowSidebar(false);
   };
 
+  //handle login and set uid and username in localstorage
   const handleLoginSuccess = (userId, userName) => {
     setIsLoggedIn(true);
     setUid(userId);
@@ -42,6 +44,7 @@ function App() {
     setIsRegisterView(false);
   };
 
+  //logout and clear uid and username from local storage
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUid(null);
@@ -51,9 +54,27 @@ function App() {
     setActiveTab("home");
   };
 
+  //add new recipe to working recipes in the app
   const handleAddRecipe = (newRecipe) => {
     setRecipes([...recipes, newRecipe]);
   };
+
+   //get recipes for the logged-in user
+   const fetchRecipes = async (userId) => {
+    try {
+      const response = await fetch(`/api/users/${userId}/recipes`);
+      if (response.ok) {
+        const userRecipes = await response.json();
+        setRecipes(userRecipes);
+      } else {
+        console.error("Failed to load recipes:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error loading recipes:", error);
+    }
+  };
+
+
 
   const toggleSidebar = () => {
     setShowSidebar((prevShowSidebar) => !prevShowSidebar);

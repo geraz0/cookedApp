@@ -42,9 +42,15 @@
 }
 
 .tab.active {
-  background-color: rgba(173, 193, 120, 0.9); /* Green color only when active */
+  background-color: rgba(173, 193, 120, 0.9) !important; /* Green color only when active */
   color: white;
 }
+/* Green background specifically for the active Cookbook tab */
+.tab.active.cookbook {
+  background-color: rgba(173, 193, 120, 0.9); /* Green color */
+  color: white;
+}
+
 
 /* Transition effects for hidden tabs */
 .tabs-container {

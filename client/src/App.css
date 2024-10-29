@@ -14,20 +14,12 @@ body {
   display: flex;
   flex-direction: column; /* Arrange header, content, and footer vertically */
   width: calc(100% - 100px); /* Full width minus 50px margin on each side */
-  height: calc(
-    100vh - 100px
-  ); /* Full height minus 50px margin on top and bottom */
+  height: calc(100vh - 100px); /* Full height minus 50px margin on top and bottom */
   margin: 50px auto; /* Centered with 50px margin */
   padding: 20px; /* Inner padding */
-  background: rgba(
-    255,
-    240,
-    230,
-    0.75
-  ); /* Background color with transparency */
+  background: rgba(255, 240, 230, 0.75); /* Background color with transparency */
   border-radius: 10px; /* Optional rounded corners */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow */
-  
   box-sizing: border-box;
   position: relative;
   transition: all 0.3s ease; /* Smooth transition for layout adjustments */
@@ -40,6 +32,26 @@ body {
   align-items: center; /* Centers content vertically */
   background-color: rgba(255, 240, 230, 0.65); /* Slightly transparent header */
   transition: padding 0.3s ease;
+  position: relative; /* Allows absolute positioning of welcome container */
+}
+
+/* New Welcome Message Styling */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  right: 20px; /* Adjust spacing from the right edge */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.welcome-text {
+  margin-bottom: 5px;
+}
+
+.logout-button {
+  margin-left: 0; /* Reset any left margin */
 }
 
 /* Footer */
@@ -57,16 +69,10 @@ footer {
   width: auto;
   height: 50vh;
   position: absolute;
-  
   left: 0;
   z-index: 1000;
   justify-content: flex-start;
-  background-color: rgba(
-    255,
-    240,
-    230,
-    0.75
-  ); /* Match sidebar to app-container */
+  background-color: rgba(255, 240, 230, 0.75); /* Match sidebar to app-container */
   border-radius: 0 10px 10px 0; /* Smooth transition into app-container */
   box-shadow: none; /* Remove any sidebar shadow */
 }
@@ -87,12 +93,7 @@ footer {
 }
 
 .tab:hover {
-  background-color: rgba(
-    233,
-    236,
-    239,
-    0.9
-  ); /* Slightly transparent hover color */
+  background-color: rgba(233, 236, 239, 0.9); /* Slightly transparent hover color */
   box-shadow: none; /* No shadow on hover */
 }
 
@@ -106,10 +107,8 @@ footer {
   flex: 1; /* Expands to fill space between header and footer */
   padding: 20px 50px;
   margin: 10px 30px;
-
   border-radius: 8px; /* Rounded corners similar to the form */
   overflow-y: auto;
-   /* Center and limit width for form-like feel */
   transition: margin 0.3s ease, padding 0.3s ease; /* Smooth transitions */
 }
 

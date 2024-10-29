@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
-  faUtensils,
+  faPenToSquare,
   faBook,
+  faUtensils,
   faList,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Sidebar.css";
@@ -36,13 +37,19 @@ const Sidebar = ({ onTabClick, showSidebar, toggleSidebar }) => {
           className={`tab ${activeTab === "new recipe" ? "active" : ""}`}
           onClick={() => handleTabClick("new recipe")}
         >
-          <FontAwesomeIcon icon={faUtensils} size="2x" />
+          <FontAwesomeIcon icon={faPenToSquare} size="2x" />
         </div>
         <div
           className={`tab ${activeTab === "cookbook" ? "active" : ""}`}
           onClick={() => handleTabClick("cookbook")}
         >
           <FontAwesomeIcon icon={faBook} size="2x" />
+        </div>
+        <div
+          className={`tab ${activeTab === "mealplan" ? "active" : ""}`}
+          onClick={() => handleTabClick("mealplan")}
+        >
+          <FontAwesomeIcon icon={faUtensils} size="2x" />
         </div>
         <div
           className={`tab ${activeTab === "grocery list" ? "active" : ""}`}

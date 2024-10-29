@@ -66,9 +66,9 @@ const Recipes = sequelize.define('Recipes', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  servings: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+  image: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
   created_at: {
     type: DataTypes.DATE,

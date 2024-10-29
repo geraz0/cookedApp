@@ -18,7 +18,7 @@ const Login = ({ setIsLoggedIn, setIsRegisterView }) => {
       })
       .then(data => {
         console.log('Logged in:', data.user);
-        setIsLoggedIn(true); // Only set to true if login is successful
+        setIsLoggedIn(data.user.id, data.user.username); // Pass uid and username back to App
       })
       .catch(error => {
         console.log('Login error:', error.message);

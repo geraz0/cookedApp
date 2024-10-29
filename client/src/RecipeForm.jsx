@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 
-
-const RecipeForm = ({ onAddRecipe }) => {
-  // State for the form inputs
+const RecipeForm = ({ onAddRecipe, uid }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState([
     { name: "", quantity: "", unit: "Select unit" },
@@ -11,12 +9,16 @@ const RecipeForm = ({ onAddRecipe }) => {
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [message, setMessage] = useState(""); // For success/error messages
+  const [message, setMessage] = useState("");
+  const [description, setDescription] = useState("");
 
-  const lambdaUrl = "https://your-lambda-function-url";
 
-  // Handle the title input change
-  const handleTitleChange = (e) => setTitle(e.target.value);
+  // Handle ingredient input changes
+  const handleIngredientChange = (index, field, value) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index][field] = value;
+    setIngredients(newIngredients);
+  };
 
   // Handle adding a new ingredient
   const handleAddIngredient = () => {
@@ -26,23 +28,14 @@ const RecipeForm = ({ onAddRecipe }) => {
     ]);
   };
 
-  // Handle ingredient input changes
-  const handleIngredientChange = (index, field, value) => {
-    const newIngredients = [...ingredients];
-    newIngredients[index][field] = value;
-    setIngredients(newIngredients);
-  };
-
-  // // Handle image upload
-  // const handleImageUpload = (e) => setImage(e.target.files[0]);
-
+  // Handle image upload and compression
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: true
+        useWebWorker: true,
       };
 
       try {
@@ -50,11 +43,11 @@ const RecipeForm = ({ onAddRecipe }) => {
         const reader = new FileReader();
         reader.readAsDataURL(compressedFile);
         reader.onloadend = () => {
-          setImage(compressedFile);
+          setImage(reader.result); // Set Base64 image for submission
           setImagePreview(reader.result);
         };
       } catch (error) {
-        console.error('Error compressing the image', error);
+        console.error("Error compressing the image", error);
       }
     }
   };
@@ -63,39 +56,31 @@ const RecipeForm = ({ onAddRecipe }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form data preparation for POST
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructions", instructions);
-    ingredients.forEach((ingredient, index) => {
-      formData.append(`ingredients[${index}][name]`, ingredient.name);
-      formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
-      formData.append(`ingredients[${index}][unit]`, ingredient.unit);
-    });
-    if (image) formData.append("image", image);
+    const formData = {
+      recipe_name: title,
+      instructions,
+      ingredients,
+      description,
+      image,
+      user_id: uid,
+    };
 
     try {
-      const response = await fetch(lambdaUrl, {
+      const response = await fetch('/api/recipes', {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         const result = await response.json();
-        const newRecipe = {
-          id: result.id,
-          title,
-          ingredients,
-          instructions,
-          image,
-        };
+        onAddRecipe(result);
 
-        // Add the new recipe to the Cookbook
-        onAddRecipe(newRecipe);
-
-        // Reset form fields and set success message
         setMessage("Recipe created successfully!");
         setTitle("");
+        setDescription("");
         setIngredients([{ name: "", quantity: "", unit: "Select unit" }]);
         setInstructions("");
         setImage(null);
@@ -109,10 +94,7 @@ const RecipeForm = ({ onAddRecipe }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ textAlign: "center", marginTop: "20px" }}
-    >
+    <form onSubmit={handleSubmit} style={{ textAlign: "center", marginTop: "20px" }}>
       <h2>Add a New Recipe</h2>
 
       {/* Recipe Title Input */}
@@ -121,11 +103,22 @@ const RecipeForm = ({ onAddRecipe }) => {
           type="text"
           placeholder="Recipe Title"
           value={title}
-          onChange={handleTitleChange}
+          onChange={(e) => setTitle(e.target.value)}
           style={{ width: "60%", padding: "10px", fontSize: "16px" }}
           required
         />
       </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          style={{ width: "60%", padding: "10px", fontSize: "16px" }}
+          required
+        />
+      </div>
+
 
       {/* Ingredients Section */}
       <div>
@@ -171,11 +164,7 @@ const RecipeForm = ({ onAddRecipe }) => {
             </select>
           </div>
         ))}
-        <button
-          type="button"
-          onClick={handleAddIngredient}
-          style={{ marginTop: "10px", padding: "5px 15px" }}
-        >
+        <button type="button" onClick={handleAddIngredient} style={{ marginTop: "10px", padding: "5px 15px" }}>
           Add Ingredient
         </button>
       </div>
@@ -201,26 +190,18 @@ const RecipeForm = ({ onAddRecipe }) => {
       <div style={{ margin: "20px", marginRight: "40px" }}>
         <h3>Recipe Image</h3>
         <input type="file" accept="public/*" onChange={handleImageUpload} />
+        {imagePreview && <img src={imagePreview} alt="Preview" style={{ width: "100px", marginTop: "10px" }} />}
       </div>
 
       {/* Submit Button */}
       <div style={{ marginTop: "20px" }}>
-        <button
-          type="submit"
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            marginBottom: "20px",
-          }}
-        >
+        <button type="submit" style={{ padding: "10px 20px", fontSize: "16px", marginBottom: "20px" }}>
           Add Recipe
         </button>
       </div>
 
       {/* Message Display */}
-      {message && (
-        <p style={{ marginTop: "20px", color: "green" }}>{message}</p>
-      )}
+      {message && <p style={{ marginTop: "20px", color: "green" }}>{message}</p>}
     </form>
   );
 };

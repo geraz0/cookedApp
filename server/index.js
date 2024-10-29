@@ -60,7 +60,15 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    res.status(200).json({ message: 'Login successful', user: { id: user.user_id, email: user.email } });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        id: user.user_id,
+        email: user.email,
+        username: user.username 
+      }
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'An error occurred during login' });
@@ -68,8 +76,9 @@ app.post('/api/login', async (req, res) => {
 });
 
 
+
 // Get all users
-app.get('/users', async (req, res) => {
+app.get('/api/users', async (req, res) => {
   try {
     const users = await Users.findAll();
     res.status(200).json(users);
@@ -79,7 +88,7 @@ app.get('/users', async (req, res) => {
 });
 
 // Get a specific user by ID
-app.get('/users/:id', async (req, res) => {
+app.get('/api/users/:id', async (req, res) => {
   try {
     const user = await Users.findByPk(req.params.id);
     if (user) {
@@ -93,7 +102,7 @@ app.get('/users/:id', async (req, res) => {
 });
 
 // Get a specific user by email
-app.get('/users/email/:email', async (req, res) => {
+app.get('/api/users/email/:email', async (req, res) => {
     try {
       const user = await Users.findOne({ where: { email: req.params.email } });
       if (user) {
@@ -108,7 +117,7 @@ app.get('/users/email/:email', async (req, res) => {
 
 
   // Get a specific user by username
-app.get('/users/username/:username', async (req, res) => {
+app.get('/api/users/username/:username', async (req, res) => {
     try {
       const user = await Users.findOne({ where: { username: req.params.username } });
       if (user) {
@@ -122,7 +131,7 @@ app.get('/users/username/:username', async (req, res) => {
   });
 
 // Update a user
-app.put('/users/:id', async (req, res) => {
+app.put('/api/users/:id', async (req, res) => {
     try {
       const { username, email, password } = req.body;
       const userId = req.params.id;
@@ -173,7 +182,7 @@ app.put('/users/:id', async (req, res) => {
   
 
 // Delete a user
-app.delete('/users/:id', async (req, res) => {
+app.delete('/api/users/:id', async (req, res) => {
   try {
     const user = await Users.findByPk(req.params.id);
     if (user) {
@@ -190,18 +199,27 @@ app.delete('/users/:id', async (req, res) => {
 // ------ RECIPES ROUTES ------ //
 
 // Create new recipe
-app.post('/recipes', async (req, res) => {
+app.post('/api/recipes', async (req, res) => {
   try {
-    const { user_id, recipe_name, description, instructions, servings } = req.body;
-    const newRecipe = await Recipes.create({ user_id, recipe_name, description, instructions, servings });
+    const { user_id, recipe_name, description, instructions, image } = req.body;
+
+    const newRecipe = await Recipes.create({
+      user_id,
+      recipe_name,
+      description,
+      instructions,
+      image, 
+    });
+
     res.status(201).json(newRecipe);
   } catch (error) {
+    console.error('Error creating recipe:', error);
     res.status(500).json({ error: 'Error creating recipe' });
   }
 });
 
 // Get all recipes
-app.get('/recipes', async (req, res) => {
+app.get('/api/recipes', async (req, res) => {
   try {
     const recipes = await Recipes.findAll();
     res.status(200).json(recipes);
@@ -211,7 +229,7 @@ app.get('/recipes', async (req, res) => {
 });
 
 // Get recipes by user ID
-app.get('/users/:userId/recipes', async (req, res) => {
+app.get('/api/users/:userId/recipes', async (req, res) => {
   try {
     const recipes = await Recipes.findAll({ where: { user_id: req.params.userId } });
     res.status(200).json(recipes);
@@ -222,7 +240,7 @@ app.get('/users/:userId/recipes', async (req, res) => {
 
 
 // Get a specific recipe by ID
-app.get('/recipes/:id', async (req, res) => {
+app.get('/api/recipes/:id', async (req, res) => {
   try {
     const recipe = await Recipes.findByPk(req.params.id);
     if (recipe) {
@@ -236,27 +254,30 @@ app.get('/recipes/:id', async (req, res) => {
 });
 
 // Update a recipe
-app.put('/recipes/:id', async (req, res) => {
+app.put('/api/recipes/:id', async (req, res) => {
   try {
-    const { recipe_name, description, instructions, servings } = req.body;
+    const { recipe_name, description, instructions, image } = req.body;
     const recipe = await Recipes.findByPk(req.params.id);
+
     if (recipe) {
       recipe.recipe_name = recipe_name || recipe.recipe_name;
       recipe.description = description || recipe.description;
       recipe.instructions = instructions || recipe.instructions;
-      recipe.servings = servings || recipe.servings;
+      recipe.image = image || recipe.image; 
       await recipe.save();
+
       res.status(200).json(recipe);
     } else {
       res.status(404).json({ error: 'Recipe not found' });
     }
   } catch (error) {
+    console.error('Error updating recipe:', error);
     res.status(500).json({ error: 'Error updating recipe' });
   }
 });
 
 // Delete a recipe
-app.delete('/recipes/:id', async (req, res) => {
+app.delete('api/recipes/:id', async (req, res) => {
   try {
     const recipe = await Recipes.findByPk(req.params.id);
     if (recipe) {
@@ -273,7 +294,7 @@ app.delete('/recipes/:id', async (req, res) => {
 // ------ INGREDIENTS ROUTES ------ //
 
 // Create new ingredient
-app.post('/ingredients', async (req, res) => {
+app.post('/api/ingredients', async (req, res) => {
   try {
     const { ingredient_name, unit } = req.body;
     const newIngredient = await Ingredients.create({ ingredient_name, unit });
@@ -284,7 +305,7 @@ app.post('/ingredients', async (req, res) => {
 });
 
 // Get all ingredients
-app.get('/ingredients', async (req, res) => {
+app.get('/api/ingredients', async (req, res) => {
   try {
     const ingredients = await Ingredients.findAll();
     res.status(200).json(ingredients);
@@ -294,7 +315,7 @@ app.get('/ingredients', async (req, res) => {
 });
 
 // Get a specific ingredient by ID
-app.get('/ingredients/:id', async (req, res) => {
+app.get('/api/ingredients/:id', async (req, res) => {
   try {
     const ingredient = await Ingredients.findByPk(req.params.id);
     if (ingredient) {
@@ -310,7 +331,7 @@ app.get('/ingredients/:id', async (req, res) => {
 // ------ RECIPE INGREDIENTS ROUTES ------ //
 
 // Add ingredients to a recipe
-app.post('/recipes/:recipeId/ingredients', async (req, res) => {
+app.post('/api/recipes/:recipeId/ingredients', async (req, res) => {
   try {
     const { ingredients } = req.body; // Array of { ingredient_id, quantity }
     const recipeId = req.params.recipeId;
@@ -330,7 +351,7 @@ app.post('/recipes/:recipeId/ingredients', async (req, res) => {
 });
 
 // Get all ingredients for a recipe
-app.get('/recipes/:recipeId/ingredients', async (req, res) => {
+app.get('/api/recipes/:recipeId/ingredients', async (req, res) => {
   try {
     const ingredients = await RecipeIngredients.findAll({ where: { recipe_id: req.params.recipeId } });
     res.status(200).json(ingredients);
@@ -342,7 +363,7 @@ app.get('/recipes/:recipeId/ingredients', async (req, res) => {
 // ------ MEAL PLANS ROUTES ------ //
 
 // Create a meal plan
-app.post('/mealplans', async (req, res) => {
+app.post('/api/mealplans', async (req, res) => {
   try {
     const { user_id, start_date, end_date } = req.body;
     const newMealPlan = await MealPlans.create({ user_id, start_date, end_date });
@@ -353,7 +374,7 @@ app.post('/mealplans', async (req, res) => {
 });
 
 // Get all meal plans for a user
-app.get('/users/:userId/mealplans', async (req, res) => {
+app.get('/api/users/:userId/mealplans', async (req, res) => {
   try {
     const mealPlans = await MealPlans.findAll({ where: { user_id: req.params.userId } });
     res.status(200).json(mealPlans);
@@ -363,7 +384,7 @@ app.get('/users/:userId/mealplans', async (req, res) => {
 });
 
 // Get a specific meal plan by ID
-app.get('/mealplans/:id', async (req, res) => {
+app.get('/api/mealplans/:id', async (req, res) => {
   try {
     const mealPlan = await MealPlans.findByPk(req.params.id);
     if (mealPlan) {
@@ -377,7 +398,7 @@ app.get('/mealplans/:id', async (req, res) => {
 });
 
 // Delete a meal plan
-app.delete('/mealplans/:id', async (req, res) => {
+app.delete('/api/mealplans/:id', async (req, res) => {
   try {
     const mealPlan = await MealPlans.findByPk(req.params.id);
     if (mealPlan) {
@@ -394,7 +415,7 @@ app.delete('/mealplans/:id', async (req, res) => {
 // ------ MEAL PLAN RECIPES ROUTES ------ //
 
 // Add a recipe to a meal plan
-app.post('/mealplans/:mealPlanId/recipes', async (req, res) => {
+app.post('/api/mealplans/:mealPlanId/recipes', async (req, res) => {
   try {
     const { recipe_id } = req.body;
     const mealPlanId = req.params.mealPlanId;
@@ -406,7 +427,7 @@ app.post('/mealplans/:mealPlanId/recipes', async (req, res) => {
 });
 
 // Get all recipes for a meal plan
-app.get('/mealplans/:mealPlanId/recipes', async (req, res) => {
+app.get('/api/mealplans/:mealPlanId/recipes', async (req, res) => {
   try {
     const recipes = await MealPlanRecipes.findAll({ where: { meal_plan_id: req.params.mealPlanId } });
     res.status(200).json(recipes);
@@ -416,7 +437,7 @@ app.get('/mealplans/:mealPlanId/recipes', async (req, res) => {
 });
 
 // Remove a recipe from a meal plan
-app.delete('/mealplans/:mealPlanId/recipes/:recipeId', async (req, res) => {
+app.delete('/api/mealplans/:mealPlanId/recipes/:recipeId', async (req, res) => {
   try {
     const mealPlanId = req.params.mealPlanId;
     const recipeId = req.params.recipeId;

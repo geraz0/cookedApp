@@ -5,7 +5,7 @@ const express = require('express');
 const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const { Op } = require('sequelize');
+// const { Op } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 4000;

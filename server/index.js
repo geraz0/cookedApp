@@ -416,6 +416,45 @@ app.get('/api/recipes/:recipeId/ingredients', async (req, res) => {
 });
 
 
+// Get all ingredients for all recipes by user ID
+app.get('/api/users/:userId/ingredients', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userRecipes = await Recipes.findAll({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Ingredients,
+          through: { attributes: ['quantity'] }, // Include quantity from RecipeIngredients
+          attributes: ['ingredient_name', 'unit'],
+        },
+      ],
+    });
+
+    if (!userRecipes.length) {
+      return res.status(404).json({ error: 'No ingredients found for this user\'s recipes' });
+    }
+
+    const ingredients = userRecipes.flatMap((recipe) => {
+      return recipe.Ingredients.map((ingredient) => ({
+        recipe_id: recipe.recipe_id,
+        name: ingredient.ingredient_name,
+        unit: ingredient.unit,
+        quantity: ingredient.RecipeIngredients.quantity, // Quantity from RecipeIngredients
+      }));
+    });
+
+    res.status(200).json(ingredients);
+  } catch (error) {
+    console.error('Error fetching ingredients for all recipes by user:', error);
+    res.status(500).json({ error: 'Error fetching ingredients for all recipes by user' });
+  }
+});
+
+
+
+
 // Edit ingredients for a specific recipe by recipeId
 app.put('/api/recipes/:recipeId/ingredients', async (req, res) => {
   const { recipeId } = req.params;

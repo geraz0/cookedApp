@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import RecipeCard from "./RecipeCard";
 
-const Cookbook = ({ recipes }) => {
+const Cookbook = ({ recipes, ingredients }) => {
   const [selectedRecipes, setSelectedRecipes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -76,16 +76,26 @@ const Cookbook = ({ recipes }) => {
         />
       </div>
 
+
       <div className="recipe-list">
-        {filteredRecipes.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            onClick={() => handleRecipeSelect(recipe.id)}
-            isSelected={selectedRecipes.includes(recipe.id)}
-          />
-        ))}
-      </div>
+  {filteredRecipes.map((recipe) => {
+    const recipeIngredients = ingredients.find(
+      (item) => item.recipe_id === recipe.recipe_id
+    );
+
+    return (
+      <RecipeCard
+        key={recipe.recipe_id}
+        recipe={recipe}
+        ingredients={recipeIngredients?.ingredients || []}  
+        onClick={() => handleRecipeSelect(recipe.recipe_id)}
+        isSelected={selectedRecipes.includes(recipe.recipe_id)}
+      />
+    );
+  })}
+</div>
+
+
 
       <button onClick={onBuildGroceryList} className="build-grocery-button">
         Build Grocery List

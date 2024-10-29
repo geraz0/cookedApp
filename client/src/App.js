@@ -15,12 +15,14 @@ function App() {
   const [uid, setUid] = useState(localStorage.getItem("uid") || null); // Initialize with localStorage
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [recipes, setRecipes] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
 
   // Update login status based on uid presence in localStorage
   useEffect(() => {
     if (uid) {
       setIsLoggedIn(true);
-      fetchRecipes(uid); // Fetch recipes on component mount or login
+      fetchRecipes(uid); 
+      fetchIngredients(uid);
     }
   }, [uid]);
 
@@ -55,8 +57,9 @@ function App() {
   };
 
   //add new recipe to working recipes in the app
-  const handleAddRecipe = (newRecipe) => {
+  const handleAddRecipe = async (newRecipe) => {
     setRecipes([...recipes, newRecipe]);
+    await fetchIngredients(uid); //workaround to update ingredients
   };
 
    //get recipes for the logged-in user
@@ -73,7 +76,40 @@ function App() {
       console.error("Error loading recipes:", error);
     }
   };
-
+  const fetchIngredients = async (userId) => {
+    try {
+      const response = await fetch(`/api/users/${userId}/ingredients`);
+      if (response.ok) {
+        const userIngredients = await response.json();
+  
+        // Group ingredients by recipe_id
+        const groupedIngredients = userIngredients.reduce((acc, ingredient) => {
+          const { recipe_id, name, unit, quantity } = ingredient;
+  
+          if (!acc[recipe_id]) {
+            acc[recipe_id] = [];
+          }
+          
+          acc[recipe_id].push({ name, unit, quantity });
+          
+          return acc;
+        }, {});
+  
+        // Transform into an array format [{ recipe_id: X, ingredients: [...] }, ...]
+        const ingredientsByRecipe = Object.keys(groupedIngredients).map((recipeId) => ({
+          recipe_id: parseInt(recipeId, 10),
+          ingredients: groupedIngredients[recipeId],
+        }));
+  
+        setIngredients(ingredientsByRecipe);
+      } else {
+        console.error("Failed to load ingredients:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error loading ingredients:", error);
+    }
+  };
+  
 
 
   const toggleSidebar = () => {
@@ -117,7 +153,7 @@ function App() {
 
           {isLoggedIn && (
             <>
-              {activeTab === "cookbook" && <Cookbook recipes={recipes}/>}
+              {activeTab === "cookbook" && <Cookbook recipes={recipes} ingredients={ingredients}/>}
               {activeTab === "new recipe" && <RecipeForm onAddRecipe={handleAddRecipe} uid={uid}/>}
               {activeTab === "grocery list" && <GroceryList />}
             </>

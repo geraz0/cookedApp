@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const RecipeCard = ({ recipe, onClick, isSelected }) => {
+const RecipeCard = ({ recipe, ingredients, onClick, isSelected }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => {
@@ -44,7 +44,7 @@ const RecipeCard = ({ recipe, onClick, isSelected }) => {
         <>
           <p><strong>Ingredients:</strong></p>
           <ul>
-            {(recipe.ingredients || []).map((ingredient, idx) => (
+            {ingredients.map((ingredient, idx) => (
               <li key={idx}>
                 {ingredient.quantity} {ingredient.unit} {ingredient.name}
               </li>

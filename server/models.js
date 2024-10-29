@@ -176,6 +176,15 @@ const MealPlanRecipes = sequelize.define('MealPlanRecipes', {
   timestamps: false,
 });
 
+// Associations for Recipes and Ingredients through RecipeIngredients
+Recipes.belongsToMany(Ingredients, { through: RecipeIngredients, foreignKey: 'recipe_id' });
+Ingredients.belongsToMany(Recipes, { through: RecipeIngredients, foreignKey: 'ingredient_id' });
+
+// Optional: associate RecipeIngredients to Recipes and Ingredients directly
+RecipeIngredients.belongsTo(Recipes, { foreignKey: 'recipe_id' });
+RecipeIngredients.belongsTo(Ingredients, { foreignKey: 'ingredient_id' });
+
+
 // Export all models
 // Export all models and the sequelize instance
 module.exports = {

@@ -13,10 +13,10 @@ function App() {
   const [isRegisterView, setIsRegisterView] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [uid, setUid] = useState(localStorage.getItem("uid") || null); // Initialize with localStorage
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [recipes, setRecipes] = useState([]);
 
-  // Update login status based on uid presence in localStorage
+  // Update login status based on uid presence in localStorage and grab username from db to display
   useEffect(() => {
     if (uid) {
       setIsLoggedIn(true);
@@ -32,7 +32,8 @@ function App() {
     setIsLoggedIn(true);
     setUid(userId);
     setUsername(userName);
-    localStorage.setItem("uid", userId); // Save uid to localStorage
+    localStorage.setItem("username", userName)
+    localStorage.setItem("uid", userId); 
     setIsRegisterView(false);
     setActiveTab("cookbook");
   };
@@ -45,7 +46,8 @@ function App() {
     setIsLoggedIn(false);
     setUid(null);
     setUsername("");
-    localStorage.removeItem("uid"); // Clear uid from localStorage
+    localStorage.removeItem("uid"); 
+    localStorage.removeItem("username"); 
     setActiveTab("home");
   };
 

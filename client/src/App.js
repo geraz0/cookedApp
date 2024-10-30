@@ -35,7 +35,7 @@ function App() {
     if (uid) {
       fetchIngredients(uid); // Refresh ingredients when recipes change
     }
-  }, [recipes]);
+  }, [recipes, uid]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);

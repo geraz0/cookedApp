@@ -32,7 +32,7 @@ const Sidebar = ({ onTabClick, showSidebar, toggleSidebar }) => {
       </div>
 
       {/* Other Tabs, with transition based on showSidebar */}
-      <div className={`tabs-container ${showSidebar ? "open" : "closed"}`}>
+      <div className="tabs-container open">
         <div
           className={`tab ${activeTab === "new recipe" ? "active" : ""}`}
           onClick={() => handleTabClick("new recipe")}

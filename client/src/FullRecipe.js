@@ -1,30 +1,29 @@
 import React from "react";
 
-const FullRecipe = ({ recipe, onDelete }) => {
-  // Function to handle recipe deletion
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(`/api/recipes/${recipe.recipe_id}`, {
-        method: 'DELETE',
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Failed to delete recipe: ${response.statusText}`);
-      }
-  
-      onDelete(); // Navigate back to the cookbook
-    } catch (error) {
-      console.error('Error deleting recipe:', error);
-      alert(`There was an error deleting the recipe: ${error.message}`);
-    }
-  };
-  
-
+const FullRecipe = ({ recipe, ingredients, onDelete, onBack }) => {
   return (
     <div className="full-recipe" style={{ position: "relative" }}>
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          backgroundColor: "#333",
+          color: "white",
+          border: "none",
+          padding: "5px 10px",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+      >
+        Back
+      </button>
+
       {/* Delete Button */}
       <button
-        onClick={handleDelete}
+        onClick={onDelete}
         style={{
           position: "absolute",
           top: "10px",
@@ -57,21 +56,19 @@ const FullRecipe = ({ recipe, onDelete }) => {
 
       {/* Display Ingredients List */}
       <h3>Ingredients</h3>
-      <ul>
-        {recipe.ingredients ? (
-          recipe.ingredients.map((ingredient, index) => (
-            <li key={index}>
-              {`${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`}
-            </li>
-          ))
-        ) : (
-          <li>No ingredients listed.</li>
-        )}
-      </ul>
+        <ul>
+            {ingredients.map((ingredient, idx) => (
+              <li key={idx}>
+                {ingredient.quantity} {ingredient.unit} {ingredient.name}
+              </li>
+            ))}
+          </ul>
 
       {/* Display Instructions */}
       <h3>Instructions</h3>
-      <p>{recipe.instructions}</p>
+      <pre style={{ whiteSpace: "pre-wrap", fontSize: "16px" }}>
+            {recipe.instructions}
+          </pre>
     </div>
   );
 };

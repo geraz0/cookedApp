@@ -4,7 +4,7 @@ const RecipeCard = ({ recipe, ingredients, onClick }) => {
   return (
     <div
       className="recipe-card"
-      onClick={() => onClick(recipe)}
+      onClick={() => onClick(recipe, ingredients)}
       style={{
         width: "100%",
         maxWidth: "150px",
@@ -24,7 +24,7 @@ const RecipeCard = ({ recipe, ingredients, onClick }) => {
     >
       <h3 style={{ margin: "0 0 10px 0" }}>{recipe.recipe_name}</h3>
       <p style={{ flex: "1", overflow: "hidden", textOverflow: "ellipsis" }}>{recipe.description}</p>
-      
+
       {recipe.image && (
         <img
           src={recipe.image}

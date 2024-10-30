@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import FullRecipe from "./FullRecipe";
 
-const MealPlan = ({ uid, ingredients }) => {
+const MealPlan = ({ uid, ingredients, setLatestMealPlan }) => {
   const [mealPlan, setMealPlan] = useState(null);
   const [mealPlanRecipes, setMealPlanRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -57,27 +57,26 @@ const fetchRecipesForMealPlan = async (mealPlanId) => {
 
 
 
-  // Function to create a new meal plan
-  const createMealPlan = async () => {
-    try {
-      const response = await fetch('/api/mealplans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ user_id: uid }),
-      });
+const createMealPlan = async () => {
+  try {
+    const response = await fetch('/api/mealplans', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: uid }),
+    });
 
-      if (response.ok) {
-        const newMealPlan = await response.json();
-        setMealPlan(newMealPlan); // Update the state immediately to reflect the new plan
-      } else {
-        console.error("Failed to create meal plan:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error creating meal plan:", error);
+    if (response.ok) {
+      const newMealPlan = await response.json();
+      setMealPlan(newMealPlan); // Update local state
+      setLatestMealPlan(newMealPlan); // Update App's state
+    } else {
+      console.error("Failed to create meal plan:", response.statusText);
     }
-  };
+  } catch (error) {
+    console.error("Error creating meal plan:", error);
+  }
+};
+
 
   // Function to finish the current meal plan
   const finishMealPlan = async () => {

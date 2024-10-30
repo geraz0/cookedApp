@@ -20,11 +20,14 @@ function App() {
   const [recipes, setRecipes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [latestMealPlan, setLatestMealPlan] = useState(null);
+  const [allRecipes, setAllRecipes] = useState([]);
 
   useEffect(() => {
     if (uid) {
       fetchRecipes(uid);
       fetchIngredients(uid);
+      fetchAllRecipes();
+      fetchLatestMealPlan(uid);
     }
   }, [uid]);
 
@@ -80,6 +83,20 @@ function App() {
     }
   };
 
+  const fetchAllRecipes = async () => {
+    try {
+      const response = await fetch(`/api/recipes`);
+      if (response.ok) {
+        const allTheRecipes = await response.json();
+        setAllRecipes(allTheRecipes);
+      } else {
+        console.error("Failed to load recipes:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error loading recipes:", error);
+    }
+  };
+
   const fetchIngredients = async (userId) => {
     try {
       const response = await fetch(`/api/users/${userId}/ingredients`);
@@ -112,15 +129,19 @@ function App() {
   const fetchLatestMealPlan = async (userId) => {
     try {
       const response = await fetch(`/api/users/${userId}/mealplans/open`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch latest meal plan: ${response.statusText}`);
+      if (response.ok) {
+        const data = await response.json();
+        setLatestMealPlan(data);
+      } else if (response.status === 404) {
+        setLatestMealPlan(null); // No open meal plan found
+      } else {
+        console.error("Failed to fetch latest meal plan:", response.statusText);
       }
-      const data = await response.json();
-      setLatestMealPlan(data);
     } catch (error) {
       console.error("Error fetching latest meal plan:", error);
     }
   };
+  
 
   
 
@@ -178,10 +199,10 @@ function App() {
           {isLoggedIn && (
             <>
               {activeTab === "cookbook" && (
-                <Cookbook recipes={recipes} ingredients={ingredients} setRecipes={setRecipes} currentMealPlanId={latestMealPlan?.meal_plan_id}/>
+                <Cookbook recipes={recipes} ingredients={ingredients} setRecipes={setRecipes} currentMealPlanId={latestMealPlan?.meal_plan_id} allRecipes={allRecipes}/>
               )}
               {activeTab === "new recipe" && <RecipeForm onAddRecipe={handleAddRecipe} uid={uid} />}
-              {activeTab === "mealplan" && <MealPlan latestMealPlan={latestMealPlan} uid={uid} onUpdateMealPlans={fetchLatestMealPlan} ingredients={ingredients}/>}
+              {activeTab === "mealplan" && <MealPlan latestMealPlan={latestMealPlan} uid={uid} onUpdateMealPlans={fetchLatestMealPlan} setLatestMealPlan={setLatestMealPlan} ingredients={ingredients}/>}
               {activeTab === "grocery list" && <GroceryList />}
             </>
           )}

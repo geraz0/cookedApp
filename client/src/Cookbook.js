@@ -4,7 +4,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import RecipeCard from "./RecipeCard";
 import FullRecipe from "./FullRecipe";
 
-const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId }) => {
+const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId, allRecipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -53,9 +53,28 @@ const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId }) => {
       })
     : [];
 
+      // Filter recipes based on search query
+  const filteredAllRecipes = allRecipes
+  ? allRecipes.filter((recipe) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        recipe.recipe_name?.toLowerCase().includes(query) ||
+        ingredients
+          .find((ing) => ing.recipe_id === recipe.recipe_id)?.ingredients
+          ?.some((ingredient) =>
+            `${ingredient.name} ${ingredient.quantity} ${ingredient.unit}`
+              .toLowerCase()
+              .includes(query)
+          ) ||
+        recipe.instructions?.toLowerCase().includes(query)
+      );
+    })
+  : [];
+
   return (
     <div className="cookbook-section">
       <h2>Cookbook</h2>
+
 
       <div
         style={{

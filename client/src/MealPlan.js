@@ -98,6 +98,28 @@ const fetchRecipesForMealPlan = async (mealPlanId) => {
     }
   };
 
+    // Function to remove a recipe from the meal plan
+    const handleRemoveRecipe = async (recipeId) => {
+      if (!mealPlan) return;
+  
+      try {
+        const response = await fetch(`/api/mealplans/${mealPlan.meal_plan_id}/recipes/${recipeId}`, {
+          method: 'DELETE',
+        });
+  
+        if (response.ok) {
+          // Remove the recipe from the mealPlanRecipes state
+          setMealPlanRecipes((prevRecipes) =>
+            prevRecipes.filter((recipe) => recipe.recipe_id !== recipeId)
+          );
+        } else {
+          console.error("Failed to remove recipe from meal plan:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error removing recipe from meal plan:", error);
+      }
+    };
+
   // Function to toggle recipe expansion for detailed view
   const toggleRecipeDetails = (recipe) => {
     setSelectedRecipe(selectedRecipe === recipe ? null : recipe);
@@ -161,6 +183,22 @@ const fetchRecipesForMealPlan = async (mealPlanId) => {
                   }}
                 />
               )}
+
+              {/* Remove from Meal Plan Button */}
+              <button
+                onClick={() => handleRemoveRecipe(recipe.recipe_id)}
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                Remove from Meal Plan
+              </button>
 
               {/* Show detailed view of ingredients and instructions when expanded */}
               {selectedRecipe === recipe && (

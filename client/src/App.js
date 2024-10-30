@@ -8,12 +8,16 @@ import Cookbook from "./Cookbook";
 import GroceryList from "./GroceryList";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("home");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("uid") ? "cookbook" : "home"; // Default to cookbook if logged in
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("uid"));
   const [isRegisterView, setIsRegisterView] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  const [uid, setUid] = useState(localStorage.getItem("uid") || null); // Initialize with localStorage
-  const [username, setUsername] = useState(localStorage.getItem("username") || null);
+  const [uid, setUid] = useState(localStorage.getItem("uid") || null);
+  const [username, setUsername] = useState(
+    localStorage.getItem("username") || null
+  );
   const [recipes, setRecipes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
 
@@ -21,7 +25,7 @@ function App() {
   useEffect(() => {
     if (uid) {
       setIsLoggedIn(true);
-      fetchRecipes(uid); 
+      fetchRecipes(uid);
       fetchIngredients(uid);
     }
   }, [uid]);
@@ -36,10 +40,10 @@ function App() {
     setIsLoggedIn(true);
     setUid(userId);
     setUsername(userName);
-    localStorage.setItem("username", userName)
-    localStorage.setItem("uid", userId); 
+    localStorage.setItem("username", userName);
+    localStorage.setItem("uid", userId);
     setIsRegisterView(false);
-    setActiveTab("cookbook");
+    setActiveTab("cookbook"); // Default to Cookbook on login
   };
 
   const handleRegisterSuccess = () => {
@@ -51,9 +55,9 @@ function App() {
     setIsLoggedIn(false);
     setUid(null);
     setUsername("");
-    localStorage.removeItem("uid"); 
-    localStorage.removeItem("username"); 
-    setActiveTab("home");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("username");
+    setActiveTab("home"); // Redirect to home on logout
   };
 
   //add new recipe to working recipes in the app
@@ -62,8 +66,8 @@ function App() {
     await fetchIngredients(uid); //workaround to update ingredients
   };
 
-   //get recipes for the logged-in user
-   const fetchRecipes = async (userId) => {
+  //get recipes for the logged-in user
+  const fetchRecipes = async (userId) => {
     try {
       const response = await fetch(`/api/users/${userId}/recipes`);
       if (response.ok) {
@@ -76,31 +80,34 @@ function App() {
       console.error("Error loading recipes:", error);
     }
   };
+
   const fetchIngredients = async (userId) => {
     try {
       const response = await fetch(`/api/users/${userId}/ingredients`);
       if (response.ok) {
         const userIngredients = await response.json();
-  
+
         // Group ingredients by recipe_id
         const groupedIngredients = userIngredients.reduce((acc, ingredient) => {
           const { recipe_id, name, unit, quantity } = ingredient;
-  
+
           if (!acc[recipe_id]) {
             acc[recipe_id] = [];
           }
-          
+
           acc[recipe_id].push({ name, unit, quantity });
-          
+
           return acc;
         }, {});
-  
+
         // Transform into an array format [{ recipe_id: X, ingredients: [...] }, ...]
-        const ingredientsByRecipe = Object.keys(groupedIngredients).map((recipeId) => ({
-          recipe_id: parseInt(recipeId, 10),
-          ingredients: groupedIngredients[recipeId],
-        }));
-  
+        const ingredientsByRecipe = Object.keys(groupedIngredients).map(
+          (recipeId) => ({
+            recipe_id: parseInt(recipeId, 10),
+            ingredients: groupedIngredients[recipeId],
+          })
+        );
+
         setIngredients(ingredientsByRecipe);
       } else {
         console.error("Failed to load ingredients:", response.statusText);
@@ -109,8 +116,6 @@ function App() {
       console.error("Error loading ingredients:", error);
     }
   };
-  
-
 
   const toggleSidebar = () => {
     setShowSidebar((prevShowSidebar) => !prevShowSidebar);
@@ -129,26 +134,37 @@ function App() {
       }}
     >
       <div className="app-container">
-      <header className="app-header">
-  <img src="/Logo.png" alt="Cooked Logo" className="header-logo" style={{ width: "120px", height: "auto" }} />
-  {isLoggedIn && (
-  <div className="welcome-container">
-    <span className="welcome-text">Welcome, {username}!</span>
-    <button onClick={handleLogout} className="logout-button">Logout</button>
-  </div>
-)}
-
-</header>
-
-
+        <header className="app-header">
+          <img
+            src="/Logo.png"
+            alt="Cooked Logo"
+            className="header-logo"
+            style={{ width: "120px", height: "auto" }}
+          />
+          {isLoggedIn && (
+            <div className="welcome-container">
+              <span className="welcome-text">Welcome, {username}!</span>
+              <button onClick={handleLogout} className="logout-button">
+                Logout
+              </button>
+            </div>
+          )}
+        </header>
 
         {isLoggedIn && (
-          <Sidebar onTabClick={handleTabClick} showSidebar={showSidebar} toggleSidebar={toggleSidebar} />
+          <Sidebar
+            onTabClick={handleTabClick}
+            showSidebar={showSidebar}
+            toggleSidebar={toggleSidebar}
+          />
         )}
 
         <div className="app-content">
           {!isLoggedIn && !isRegisterView && (
-            <Login setIsLoggedIn={handleLoginSuccess} setIsRegisterView={setIsRegisterView} />
+            <Login
+              setIsLoggedIn={handleLoginSuccess}
+              setIsRegisterView={setIsRegisterView}
+            />
           )}
           {!isLoggedIn && isRegisterView && (
             <Register setIsRegistered={handleRegisterSuccess} />
@@ -156,8 +172,12 @@ function App() {
 
           {isLoggedIn && (
             <>
-              {activeTab === "cookbook" && <Cookbook recipes={recipes} ingredients={ingredients}/>}
-              {activeTab === "new recipe" && <RecipeForm onAddRecipe={handleAddRecipe} uid={uid}/>}
+              {activeTab === "cookbook" && (
+                <Cookbook recipes={recipes} ingredients={ingredients} />
+              )}
+              {activeTab === "new recipe" && (
+                <RecipeForm onAddRecipe={handleAddRecipe} uid={uid} />
+              )}
               {activeTab === "grocery list" && <GroceryList />}
             </>
           )}

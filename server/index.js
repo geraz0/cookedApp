@@ -5,12 +5,14 @@ const express = require('express');
 const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, MealPlanRecipes } = require('./models');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const cors = require('cors'); 
 // const { Op } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 // Test root route
 app.get('/', (req, res) => {
@@ -276,20 +278,22 @@ app.put('/api/recipes/:id', async (req, res) => {
   }
 });
 
-// Delete a recipe
-app.delete('api/recipes/:id', async (req, res) => {
+app.delete('/api/recipes/:id', async (req, res) => {
   try {
     const recipe = await Recipes.findByPk(req.params.id);
     if (recipe) {
+      console.log(`Deleting recipe with ID: ${req.params.id}`);
       await recipe.destroy();
       res.status(204).json({ message: 'Recipe deleted' });
     } else {
       res.status(404).json({ error: 'Recipe not found' });
     }
   } catch (error) {
+    console.error('Error deleting recipe:', error);
     res.status(500).json({ error: 'Error deleting recipe' });
   }
 });
+
 
 // ------ INGREDIENTS ROUTES ------ //
 

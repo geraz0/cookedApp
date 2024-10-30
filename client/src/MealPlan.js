@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
+import RecipeCard from "./RecipeCard";
+import FullRecipe from "./FullRecipe";
 
-const MealPlan = ({ uid }) => {
+const MealPlan = ({ uid, ingredients }) => {
   const [mealPlan, setMealPlan] = useState(null);
+  const [mealPlanRecipes, setMealPlanRecipes] = useState([]);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
 
-  // Fetch the latest open meal plan on component mount
-  useEffect(() => {
-    fetchLatestMealPlan();
-  }, []);
+
 
   // Function to fetch the latest open meal plan
   const fetchLatestMealPlan = async () => {
@@ -24,6 +25,37 @@ const MealPlan = ({ uid }) => {
       console.error("Error fetching the latest meal plan:", error);
     }
   };
+
+// Function to get recipes for a particular meal plan
+const fetchRecipesForMealPlan = async (mealPlanId) => {
+  try {
+    // Fetch all recipe IDs associated with this meal plan
+    const response = await fetch(`/api/mealplans/${mealPlanId}/recipes`);
+    if (!response.ok) {
+      throw new Error("Failed to load recipes for meal plan");
+    }
+
+    const recipeIds = await response.json(); // Returns array of recipe_id
+
+    // Use Promise.all to fetch details for each recipe concurrently
+    const mealPlanRecipes = await Promise.all(
+      recipeIds.map(async (recipe) => {
+        const recipeResponse = await fetch(`/api/recipes/${recipe.recipe_id}`);
+        if (!recipeResponse.ok) {
+          throw new Error(`Failed to load recipe with ID ${recipe.recipe_id}`);
+        }
+        return await recipeResponse.json();
+      })
+    );
+
+    // Set all fetched recipes together in state
+    setMealPlanRecipes(mealPlanRecipes);
+  } catch (error) {
+    console.error("Error loading recipes for meal plan:", error);
+  }
+};
+
+
 
   // Function to create a new meal plan
   const createMealPlan = async () => {
@@ -66,13 +98,91 @@ const MealPlan = ({ uid }) => {
     }
   };
 
+  // Function to toggle recipe expansion for detailed view
+  const toggleRecipeDetails = (recipe) => {
+    setSelectedRecipe(selectedRecipe === recipe ? null : recipe);
+  };
+
+    // Fetch the latest open meal plan on component mount
+    useEffect(() => {
+      fetchLatestMealPlan();
+    }, []);
+  
+    // Update recipes when meal plan changes
+    useEffect(() => {
+      if (mealPlan) {
+        fetchRecipesForMealPlan(mealPlan.meal_plan_id); // Fetch recipes by meal plan ID
+      }
+    }, [mealPlan]);
+
   return (
     <div>
+      <h2>Meal Plan</h2>
       {mealPlan ? (
         <button onClick={finishMealPlan}>Finish Meal Plan</button>
       ) : (
         <button onClick={createMealPlan}>Start New Meal Plan</button>
       )}
+
+      <div className="recipe-list">
+        {mealPlanRecipes.map((recipe) => {
+          const recipeIngredients = ingredients.find(
+            (item) => item.recipe_id === recipe.recipe_id
+          )?.ingredients || [];
+
+          return (
+            <div
+              key={recipe.recipe_id}
+              className="recipe-card"
+              onClick={() => toggleRecipeDetails(recipe)}
+              style={{
+                border: "1px solid #ccc",
+                padding: "15px",
+                borderRadius: "8px",
+                marginBottom: "20px",
+                cursor: "pointer",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+              }}
+            >
+              <h3>{recipe.recipe_name}</h3>
+              <p>{recipe.description}</p>
+              
+              {recipe.image && (
+                <img
+                  src={recipe.image}
+                  alt={recipe.recipe_name}
+                  style={{
+                    width: "100%",
+                    maxWidth: "300px",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                    marginBottom: "10px"
+                  }}
+                />
+              )}
+
+              {/* Show detailed view of ingredients and instructions when expanded */}
+              {selectedRecipe === recipe && (
+                <div style={{ marginTop: "10px" }}>
+                  <p><strong>Ingredients:</strong></p>
+                  <ul>
+                    {recipeIngredients.map((ingredient, idx) => (
+                      <li key={idx}>
+                        {ingredient.quantity} {ingredient.unit} {ingredient.name}
+                      </li>
+                    ))}
+                  </ul>
+                  <p><strong>Instructions:</strong></p>
+                  <pre style={{ whiteSpace: "pre-wrap", fontSize: "16px" }}>
+                    {recipe.instructions}
+                  </pre>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

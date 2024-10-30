@@ -179,7 +179,7 @@ function App() {
                 <Cookbook recipes={recipes} ingredients={ingredients} setRecipes={setRecipes} currentMealPlanId={latestMealPlan?.meal_plan_id}/>
               )}
               {activeTab === "new recipe" && <RecipeForm onAddRecipe={handleAddRecipe} uid={uid} />}
-              {activeTab === "mealplan" && <MealPlan latestMealPlan={latestMealPlan} uid={uid} onUpdateMealPlans={fetchLatestMealPlan}/>}
+              {activeTab === "mealplan" && <MealPlan latestMealPlan={latestMealPlan} uid={uid} onUpdateMealPlans={fetchLatestMealPlan} ingredients={ingredients}/>}
               {activeTab === "grocery list" && <GroceryList />}
             </>
           )}

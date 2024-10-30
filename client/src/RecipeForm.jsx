@@ -283,17 +283,78 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
       </div>
 
       {/* Image Upload */}
-      <div style={{ margin: "20px", marginRight: "40px" }}>
-        <h3>Recipe Image</h3>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Preview"
-            style={{ width: "100px", marginTop: "10px" }}
-          />
-        )}
-      </div>
+<div style={{ 
+  margin: "40px auto", 
+  padding: "20px",
+  width: "60%",
+  backgroundColor: "rgba(255, 255, 255, 0.9)",
+  borderRadius: "8px",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)"
+}}>
+  <h3 style={{ marginBottom: "15px" }}>Recipe Image</h3>
+  <div style={{ 
+    display: "flex", 
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "15px"
+  }}>
+    <input 
+      type="file" 
+      accept="image/*" 
+      onChange={handleImageUpload}
+      style={{
+        padding: "8px",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        backgroundColor: "white"
+      }}
+    />
+    {imagePreview && (
+      <button
+        type="button"
+        onClick={() => {
+          const fileInput = document.querySelector('input[type="file"]');
+          fileInput.value = '';
+          setImage(null);
+          setImagePreview(null);
+        }}
+        style={{
+          padding: "8px 15px",
+          backgroundColor: "#dc3545",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontWeight: "500"
+        }}
+      >
+        Clear
+      </button>
+    )}
+  </div>
+  {imagePreview && (
+    <div style={{
+      width: "200px",
+      height: "200px",
+      margin: "0 auto",
+      border: "1px solid #ddd",
+      borderRadius: "8px",
+      overflow: "hidden",
+      backgroundColor: "white"
+    }}>
+      <img
+        src={imagePreview}
+        alt="Preview"
+        style={{ 
+          width: "100%",
+          height: "100%",
+          objectFit: "cover"
+        }}
+      />
+    </div>
+  )}
+</div>
 
       {/* Submit Button */}
       <div style={{ marginTop: "20px" }}>

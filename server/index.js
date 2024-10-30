@@ -278,19 +278,29 @@ app.put('/api/recipes/:id', async (req, res) => {
   }
 });
 
+// Delete a recipe and its associated ingredients
 app.delete('/api/recipes/:id', async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const recipe = await Recipes.findByPk(req.params.id);
-    if (recipe) {
-      console.log(`Deleting recipe with ID: ${req.params.id}`);
-      await recipe.destroy();
-      res.status(204).json({ message: 'Recipe deleted' });
+    // First, delete associated ingredients from RecipeIngredients
+    await RecipeIngredients.destroy({
+      where: { recipe_id: id },
+    });
+
+    // Then delete the recipe
+    const deletedRecipe = await Recipes.destroy({
+      where: { recipe_id: id },
+    });
+
+    if (deletedRecipe) {
+      res.status(204).json({ message: 'Recipe and associated ingredients deleted successfully' });
     } else {
       res.status(404).json({ error: 'Recipe not found' });
     }
   } catch (error) {
     console.error('Error deleting recipe:', error);
-    res.status(500).json({ error: 'Error deleting recipe' });
+    res.status(500).json({ error: 'An error occurred while deleting the recipe' });
   }
 });
 

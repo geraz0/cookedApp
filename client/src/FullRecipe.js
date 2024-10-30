@@ -8,8 +8,8 @@ const FullRecipe = ({ recipe, ingredients, onDelete, onBack }) => {
         onClick={onBack}
         style={{
           position: "absolute",
-          top: "10px",
-          left: "10px",
+          top: "40px",
+          right: "10px",
           backgroundColor: "#333",
           color: "white",
           border: "none",

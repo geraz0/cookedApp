@@ -184,6 +184,22 @@ Ingredients.belongsToMany(Recipes, { through: RecipeIngredients, foreignKey: 'in
 RecipeIngredients.belongsTo(Recipes, { foreignKey: 'recipe_id' });
 RecipeIngredients.belongsTo(Ingredients, { foreignKey: 'ingredient_id' });
 
+// Recipes has many RecipeIngredients
+Recipes.hasMany(RecipeIngredients, {
+  foreignKey: 'recipe_id',
+  onDelete: 'CASCADE',  // Cascade deletes RecipeIngredients when a Recipe is deleted
+});
+
+RecipeIngredients.belongsTo(Recipes, {
+  foreignKey: 'recipe_id',
+});
+
+// RecipeIngredients also has a relationship with Ingredients
+RecipeIngredients.belongsTo(Ingredients, {
+  foreignKey: 'ingredient_id',
+});
+
+
 
 // Export all models
 // Export all models and the sequelize instance

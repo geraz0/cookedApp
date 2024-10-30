@@ -525,16 +525,63 @@ app.put('/api/recipes/:recipeId/ingredients', async (req, res) => {
 
 // ------ MEAL PLANS ROUTES ------ //
 
-// Create a meal plan
+// Create a meal plan with the current date as start_date and no end_date initially
 app.post('/api/mealplans', async (req, res) => {
   try {
-    const { user_id, start_date, end_date } = req.body;
-    const newMealPlan = await MealPlans.create({ user_id, start_date, end_date });
+    const { user_id } = req.body;
+    const start_date = new Date(); // Set start_date to the current date
+
+    const newMealPlan = await MealPlans.create({ user_id, start_date });
     res.status(201).json(newMealPlan);
   } catch (error) {
+    console.error("Error creating meal plan:", error);
     res.status(500).json({ error: 'Error creating meal plan' });
   }
 });
+
+// Get the open meal plan for a specific user (where end_date is null)
+app.get('/api/users/:userId/mealplans/open', async (req, res) => {
+  try {
+    const openMealPlan = await MealPlans.findOne({
+      where: {
+        user_id: req.params.userId,
+        end_date: null, // Find meal plan without an end_date
+      },
+    });
+
+    if (openMealPlan) {
+      res.status(200).json(openMealPlan);
+    } else {
+      res.status(404).json({ error: 'No open meal plan found for this user' });
+    }
+  } catch (error) {
+    console.error("Error fetching open meal plan:", error);
+    res.status(500).json({ error: 'Error fetching open meal plan' });
+  }
+});
+
+// Update a meal plan to set the current date as the end_date
+app.put('/api/mealplans/:id/close', async (req, res) => {
+  try {
+    // Find the meal plan by ID
+    const mealPlan = await MealPlans.findByPk(req.params.id);
+
+    if (!mealPlan) {
+      return res.status(404).json({ error: 'Meal plan not found' });
+    }
+
+    // Update the end_date to the current date
+    mealPlan.end_date = new Date(); // Set to current date
+    await mealPlan.save();
+
+    res.status(200).json({ message: 'Meal plan closed successfully', mealPlan });
+  } catch (error) {
+    console.error('Error closing meal plan:', error);
+    res.status(500).json({ error: 'Error closing meal plan' });
+  }
+});
+
+
 
 // Get all meal plans for a user
 app.get('/api/users/:userId/mealplans', async (req, res) => {

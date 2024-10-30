@@ -146,7 +146,7 @@ const MealPlans = sequelize.define('MealPlans', {
   },
   end_date: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
   },
 }, {
     tableName: 'mealplans',

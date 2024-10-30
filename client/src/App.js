@@ -6,6 +6,7 @@ import RecipeForm from "./RecipeForm";
 import Sidebar from "./Sidebar";
 import Cookbook from "./Cookbook";
 import GroceryList from "./GroceryList";
+import MealPlan from "./MealPlan";
 
 function App() {
   const [activeTab, setActiveTab] = useState(() => {
@@ -18,6 +19,7 @@ function App() {
   const [username, setUsername] = useState(localStorage.getItem("username") || null);
   const [recipes, setRecipes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [latestMealPlan, setLatestMealPlan] = useState(null);
 
   useEffect(() => {
     if (uid) {
@@ -107,6 +109,26 @@ function App() {
     }
   };
 
+  const fetchLatestMealPlan = async (userId) => {
+    try {
+      const response = await fetch(`/api/users/${userId}/mealplans/open`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch latest meal plan: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setLatestMealPlan(data);
+    } catch (error) {
+      console.error("Error fetching latest meal plan:", error);
+    }
+  };
+
+  useEffect(() => {
+    const userId = localStorage.getItem("uid"); // Assuming the user ID is stored in local storage
+    if (userId) {
+      fetchLatestMealPlan(userId);
+    }
+  }, []);
+
   const toggleSidebar = () => {
     setShowSidebar((prevShowSidebar) => !prevShowSidebar);
   };
@@ -154,9 +176,10 @@ function App() {
           {isLoggedIn && (
             <>
               {activeTab === "cookbook" && (
-                <Cookbook recipes={recipes} ingredients={ingredients} setRecipes={setRecipes} />
+                <Cookbook recipes={recipes} ingredients={ingredients} setRecipes={setRecipes} currentMealPlanId={latestMealPlan?.meal_plan_id}/>
               )}
               {activeTab === "new recipe" && <RecipeForm onAddRecipe={handleAddRecipe} uid={uid} />}
+              {activeTab === "mealplan" && <MealPlan latestMealPlan={latestMealPlan} uid={uid} onUpdateMealPlans={fetchLatestMealPlan}/>}
               {activeTab === "grocery list" && <GroceryList />}
             </>
           )}

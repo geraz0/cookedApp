@@ -4,7 +4,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import RecipeCard from "./RecipeCard";
 import FullRecipe from "./FullRecipe";
 
-const Cookbook = ({ recipes, ingredients, setRecipes }) => {
+const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -92,6 +92,7 @@ const Cookbook = ({ recipes, ingredients, setRecipes }) => {
           }
           onDelete={() => handleDeleteRecipe(selectedRecipe.recipe_id)}
           onBack={handleBack}
+          currentMealPlanId={currentMealPlanId} // Pass currentMealPlanId to FullRecipe
         />
       ) : (
         <div

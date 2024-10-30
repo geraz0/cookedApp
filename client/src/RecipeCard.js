@@ -6,6 +6,7 @@ const RecipeCard = ({ recipe, ingredients, onClick }) => {
       className="recipe-card"
       onClick={() => onClick(recipe, ingredients)}
       style={{
+        background: "rgba(255, 240, 230, 0.65)",
         width: "100%",
         maxWidth: "150px",
         minHeight: "250px", // Ensures each card has the same minimum height
@@ -16,10 +17,9 @@ const RecipeCard = ({ recipe, ingredients, onClick }) => {
         padding: "15px",
         borderRadius: "8px",
         cursor: "pointer",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
-        transition: "border 0.3s ease",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)"
       }}
-      onMouseEnter={(e) => e.currentTarget.style.border = "2px solid #007bff"}
+      onMouseEnter={(e) => e.currentTarget.style.border = "3px solid #FB8B24"}
       onMouseLeave={(e) => e.currentTarget.style.border = "1px solid #ccc"}
     >
       <h3 style={{ margin: "0 0 10px 0" }}>{recipe.recipe_name}</h3>

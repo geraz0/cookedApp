@@ -49,7 +49,7 @@ function App() {
     localStorage.setItem("username", userName);
     localStorage.setItem("uid", userId);
     setIsRegisterView(false);
-    setActiveTab("cookbook");
+    setActiveTab("mealplan");
   };
 
   const handleRegisterSuccess = () => {

@@ -6,7 +6,7 @@ const { sequelize, Users, Recipes, Ingredients, RecipeIngredients, MealPlans, Me
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cors = require('cors'); 
-// const { Op } = require('sequelize');
+const { Op } = require('sequelize');
 
 const app = express();
 const PORT = process.env.PORT || 4000;

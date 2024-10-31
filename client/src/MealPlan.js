@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 import FullRecipe from "./FullRecipe";
 
-const MealPlan = ({ uid, ingredients, setLatestMealPlan }) => {
+const MealPlan = ({ uid, ingredients, setLatestMealPlan, setActiveTab }) => {
   const [mealPlan, setMealPlan] = useState(null);
   const [mealPlanRecipes, setMealPlanRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+
 
 
 
@@ -68,7 +69,8 @@ const createMealPlan = async () => {
     if (response.ok) {
       const newMealPlan = await response.json();
       setMealPlan(newMealPlan); // Update local state
-      setLatestMealPlan(newMealPlan); // Update App's state
+      setLatestMealPlan(newMealPlan);
+      setActiveTab("cookbook"); // Redirect to Cookbook // Update App's state
     } else {
       console.error("Failed to create meal plan:", response.statusText);
     }
@@ -140,9 +142,30 @@ const createMealPlan = async () => {
     <div>
       <h2>Meal Plan</h2>
       {mealPlan ? (
-        <button onClick={finishMealPlan}>Finish Meal Plan</button>
+        <button onClick={finishMealPlan}
+         style={{
+                  backgroundColor: "#FF595E",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+        >Clear Meal Plan</button>
       ) : (
-        <button onClick={createMealPlan}>Start New Meal Plan</button>
+        <button onClick={createMealPlan}
+        style={{
+                  backgroundColor: "#588157",
+                  color: "white",
+                  border: "none",
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}>Start New Meal Plan
+        
+        </button>
       )}
 
       <div className="recipe-list">
@@ -156,14 +179,20 @@ const createMealPlan = async () => {
               key={recipe.recipe_id}
               className="recipe-card"
               onClick={() => toggleRecipeDetails(recipe)}
-              style={{
-                border: "1px solid #ccc",
-                padding: "15px",
-                borderRadius: "8px",
-                marginBottom: "20px",
-                cursor: "pointer",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
-              }}
+               style={{
+              background: "rgba(255, 240, 230, 0.65)",
+              width: "100%",
+              maxWidth: "150px",
+              minHeight: "250px", // Ensures each card has the same minimum height
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              border: "1px solid #ccc",
+              padding: "15px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)"
+      }}
             >
               <h3>{recipe.recipe_name}</h3>
               <p>{recipe.description}</p>

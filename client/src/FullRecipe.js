@@ -35,7 +35,7 @@ const FullRecipe = ({ recipe, ingredients, onDelete, onBack, currentMealPlanId }
   return (
     <div className="full-recipe" style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
       {/* Button Container */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" }}>
+      <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", gap: "10px", marginBottom: "20px", padding: "5px" }}>
         {/* Back Button */}
         <button
           onClick={onBack}
@@ -45,8 +45,7 @@ const FullRecipe = ({ recipe, ingredients, onDelete, onBack, currentMealPlanId }
             border: "none",
             padding: "10px",
             borderRadius: "4px",
-            cursor: "pointer",
-            width: "100%",
+            cursor: "pointer"
           }}
         >
           Back
@@ -56,13 +55,12 @@ const FullRecipe = ({ recipe, ingredients, onDelete, onBack, currentMealPlanId }
         <button
           onClick={handleAddToMealPlan}
           style={{
-            backgroundColor: "#28a745",
+            backgroundColor: "#588157",
             color: "white",
             border: "none",
             padding: "10px",
             borderRadius: "4px",
-            cursor: "pointer",
-            width: "100%",
+            cursor: "pointer"
           }}
         >
           Add to Current Meal Plan
@@ -72,13 +70,12 @@ const FullRecipe = ({ recipe, ingredients, onDelete, onBack, currentMealPlanId }
         <button
           onClick={onDelete}
           style={{
-            backgroundColor: "red",
+            backgroundColor: "#E63946",
             color: "white",
             border: "none",
             padding: "10px",
             borderRadius: "4px",
-            cursor: "pointer",
-            width: "100%",
+            cursor: "pointer"
           }}
         >
           Delete

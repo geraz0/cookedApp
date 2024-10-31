@@ -250,7 +250,7 @@ const RecipeForm = ({ onAddRecipe, uid }) => {
             <button
               type="button"
               onClick={() => handleRemoveIngredient(index)}
-              style={{ marginLeft: "5px" }}
+              style={{ marginLeft: "5px", color: "red" }}
             >
               Remove
             </button>

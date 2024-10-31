@@ -17,7 +17,8 @@ const RecipeCard = ({ recipe, ingredients, onClick }) => {
         padding: "15px",
         borderRadius: "8px",
         cursor: "pointer",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)"
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+        backgroundColor: "#fff", // Add this line
       }}
       onMouseEnter={(e) => e.currentTarget.style.border = "3px solid #FB8B24"}
       onMouseLeave={(e) => e.currentTarget.style.border = "1px solid #ccc"}

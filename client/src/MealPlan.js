@@ -191,7 +191,8 @@ const createMealPlan = async () => {
               padding: "15px",
               borderRadius: "8px",
               cursor: "pointer",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)"
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.5)",
+              backgroundColor: "#fff", // Add this line
       }}
             >
               <h3>{recipe.recipe_name}</h3>

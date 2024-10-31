@@ -72,8 +72,16 @@ const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId, allReci
   : [];
 
   return (
+    // Update the h2 styling
     <div className="cookbook-section">
-      <h2>Cookbook</h2>
+      <h2 style={{
+        fontSize: "2.5em",
+        color: "#2F4858",
+        textAlign: "center",
+        marginBottom: "30px",
+        fontWeight: "bold",
+        textShadow: "2px 2px 4px rgba(0, 0, 0, 0.1)"
+      }}>Cookbook</h2>
 
 
       <div
@@ -114,13 +122,15 @@ const Cookbook = ({ recipes, ingredients, setRecipes, currentMealPlanId, allReci
           currentMealPlanId={currentMealPlanId} // Pass currentMealPlanId to FullRecipe
         />
       ) : (
-        <div
-          className="recipe-list"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-            gap: "20px",
-            alignItems: "start",
+        // Update the recipe-list div styling
+    <div
+      className="recipe-list"
+      style={{
+        marginTop: "20px",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+        gap: "25px",
+        padding: "20px"
           }}
         >
           {filteredRecipes.map((recipe) => {
